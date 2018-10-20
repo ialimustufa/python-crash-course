@@ -13,5 +13,3 @@ http://linkedin.com/in/ialimustafa
 
 #PythonBasics by Ali Mustafa 
 #visit http://ialimustafa.com for more information
-#copyright@2018
-#Dont Redistribute without Cedits
