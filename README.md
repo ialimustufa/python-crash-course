@@ -19,3 +19,5 @@ Python : It is the basic module In Machine learning journey .
 
 
 ## some examples for practise :
+-> factorial of number , reverse number , fibonacci sequence .
+
