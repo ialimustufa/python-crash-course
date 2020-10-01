@@ -17,3 +17,5 @@ Python : It is the basic module In Machine learning journey .
 4) python : function : def ():
 5) python : OOP concepts : __init__ ,class , objects 
 
+
+## some examples for practise :
