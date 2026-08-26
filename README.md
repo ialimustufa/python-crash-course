@@ -26,16 +26,16 @@ There is no `input()` in the maintained notebooks, so they never wait for a prom
 
 ## Course path
 
-| # | Notebook | Time | Colab |
-|---|---|---|---|
-| 00 | [Colab and your first program](notebooks/00_Colab_and_First_Program.ipynb) | 35 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/00_Colab_and_First_Program.ipynb) |
-| 01 | [Values, strings, and conversion](notebooks/01_Values_Strings_and_Conversion.ipynb) | 45 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/01_Values_Strings_and_Conversion.ipynb) |
-| 02 | [Collections, indexing, and slicing](notebooks/02_Collections_Indexing_and_Slicing.ipynb) | 50 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/02_Collections_Indexing_and_Slicing.ipynb) |
-| 03 | [Conditionals and loops](notebooks/03_Conditionals_and_Loops.ipynb) | 50 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/03_Conditionals_and_Loops.ipynb) |
-| 04 | [Functions, scope, and comprehensions](notebooks/04_Functions_Scope_and_Comprehensions.ipynb) | 50 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/04_Functions_Scope_and_Comprehensions.ipynb) |
-| 05 | [Errors, modules, and files](notebooks/05_Errors_Modules_and_Files.ipynb) | 50 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/05_Errors_Modules_and_Files.ipynb) |
-| 06 | [Python data workflows for ML](notebooks/06_Python_Data_Workflows_for_ML.ipynb) | 55 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/06_Python_Data_Workflows_for_ML.ipynb) |
-| 07 | [Fundamentals capstone](notebooks/07_Fundamentals_Capstone.ipynb) | 60 min | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/07_Fundamentals_Capstone.ipynb) |
+| # | Notebook | Time | What you learn | Colab |
+|---|---|---|---|---|
+| 00 | [Colab and your first program](notebooks/00_Colab_and_First_Program.ipynb) | 35 min | Runtime, print, variables, indentation, reading errors | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/00_Colab_and_First_Program.ipynb) |
+| 01 | [Values, strings, and conversion](notebooks/01_Values_Strings_and_Conversion.ipynb) | 45 min | Types, `/` vs `//`, converting CSV-like strings, slices, f-strings | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/01_Values_Strings_and_Conversion.ipynb) |
+| 02 | [Collections, indexing, and slicing](notebooks/02_Collections_Indexing_and_Slicing.ipynb) | 50 min | Lists, tuples, dicts, sets, nested rows, copies vs aliases | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/02_Collections_Indexing_and_Slicing.ipynb) |
+| 03 | [Conditionals and loops](notebooks/03_Conditionals_and_Loops.ipynb) | 50 min | `if`/`elif`, `for`/`while`, `enumerate`, `zip`, accumulators | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/03_Conditionals_and_Loops.ipynb) |
+| 04 | [Functions, scope, and comprehensions](notebooks/04_Functions_Scope_and_Comprehensions.ipynb) | 50 min | `def`, returns, local names, list/dict comprehensions | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/04_Functions_Scope_and_Comprehensions.ipynb) |
+| 05 | [Errors, modules, and files](notebooks/05_Errors_Modules_and_Files.ipynb) | 50 min | Syntax vs runtime vs logic errors, `pathlib`, JSON, CSV | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/05_Errors_Modules_and_Files.ipynb) |
+| 06 | [Python data workflows for ML](notebooks/06_Python_Data_Workflows_for_ML.ipynb) | 55 min | Clean rows, features vs target, split first, train-only scaling | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/06_Python_Data_Workflows_for_ML.ipynb) |
+| 07 | [Fundamentals capstone](notebooks/07_Fundamentals_Capstone.ipynb) | 60 min | Prepare a dirty bike-share CSV end to end — no model yet | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/07_Fundamentals_Capstone.ipynb) |
 
 About six hours if you do the practices instead of only reading.
 
@@ -43,9 +43,10 @@ About six hours if you do the practices instead of only reading.
 
 Each notebook repeats a short cycle: explain → predict → run → practice → check.
 
+- **Predict** questions ask you to decide the output before you run. Answers sit under *After you run*.
+- Practice cells include a working answer so **Run all** never fails. Comment it out, rewrite it, then run the check.
 - Checks are `assert` statements that print `Practice xx.y passed.`
-- Hints are collapsed under the practice.
-- Solutions are in a collapsed appendix at the end of the same notebook.
+- Hints sit under each practice. Solutions and a short *Check your understanding* section are at the end.
 
 ## Capstone
 
@@ -61,7 +62,7 @@ On your fork:
 
 1. Enable **Actions** if GitHub asks (the first Actions tab visit).
 2. Open **Settings → Pages**.
-3. Set **Source** to **GitHub Actions**.
+3. Set **Source** to **GitHub Actions**. This has to exist before the deploy workflow can publish; the first run fails with `Get Pages site failed` until it is on.
 4. Run **Deploy course dashboard** from the Actions tab, or push a change under `site/`.
 5. Open `https://<your-username>.github.io/python-crash-course/`.
 

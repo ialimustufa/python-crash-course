@@ -26,7 +26,7 @@
           "choices": [
             "The markdown cell they were mentioned in",
             "The runtime, in the order you actually ran cells",
-            "GitHub, as soon as you fork the repo"
+            "The .ipynb file on disk, even before you run anything"
           ],
           "answer": 1
         },
@@ -36,7 +36,7 @@
           "choices": [
             "The error type, such as IndentationError",
             "Only the last number in the file path",
-            "The GitHub star count"
+            "The cell execution count"
           ],
           "answer": 0
         }
@@ -201,7 +201,7 @@
         {
           "id": "q1",
           "question": "int(\"bike\") is which kind of problem?",
-          "choices": ["A syntax error", "A runtime ValueError", "A Git conflict"],
+          "choices": ["A syntax error", "A runtime ValueError", "A logic error that still returns 0"],
           "answer": 1
         },
         {

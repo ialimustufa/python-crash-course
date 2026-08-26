@@ -84,13 +84,15 @@ def header(filename: str, title: str, minutes: int, prereq: str, objectives: lis
 | Time | about {minutes} minutes |
 | Prerequisites | {prereq} |
 | Environment | Google Colab, or any Python 3 notebook |
+| Thread | Bike-share trips in Indian cities — the same story builds toward the capstone |
 
 ## How to use this notebook
 
 1. Click **Open in Colab**, then use **File → Save a copy in Drive**.
-2. Run cells from top to bottom. If the kernel state gets messy, use **Runtime → Restart session** and **Run all**.
-3. Practice cells already contain working answers so **Run all** succeeds in class and in CI. To practice, delete the answer, rewrite it, and run the check.
-4. Hints sit under each practice. Clean solutions are collected at the end.
+2. Run cells **from top to bottom**. If names go missing, use **Runtime → Restart session** and **Run all**.
+3. When you see **Predict**, decide the output before you run.
+4. Practice cells include a working answer so **Run all** never fails (needed for class and CI). To learn, comment out the answer, rewrite it, then run the check.
+5. Hints sit under each practice. Clean solutions are at the end.
 
 ## What you will be able to do
 
@@ -105,6 +107,30 @@ def hint(practice_id: str, text: str) -> str:
 {text}
 
 </details>"""
+
+
+def after_run(text: str) -> str:
+    return f"""<details>
+<summary>After you run</summary>
+
+{text}
+
+</details>"""
+
+
+def understanding(items: list[tuple[str, str]]) -> str:
+    blocks = ["## Check your understanding", ""]
+    for question, answer in items:
+        blocks.append(
+            f"""<details>
+<summary>{question}</summary>
+
+{answer}
+
+</details>
+"""
+        )
+    return "\n".join(blocks)
 
 
 def solution_block(practice_id: str, code: str) -> str:
@@ -159,12 +185,14 @@ def build_00() -> list[dict]:
 A Colab notebook is a sequence of **markdown cells** (notes) and **code cells** (Python).
 
 - **Shift+Enter** runs the current cell and moves to the next one.
-- Variables live in the **runtime**. Running cell 5 before cell 4 can fail even if both cells are correct.
+- Variables live in the **runtime**, not in the file on disk. Running cell 5 before cell 4 can fail even if both cells are correct.
+- **Runtime → Run all** is the honest test: would this notebook work for the next person?
 - Closing the tab later may recycle the runtime. Re-run from the top when that happens.
 
-This course stays on Python's standard library. You do not need to `pip install` anything for the notebooks."""
+This course stays on Python's standard library. You do not need to `pip install` anything."""
     )
     b.md("## Comments and `print()`")
+    b.md("`print()` is how a notebook talks back to you. A line starting with `#` is a comment: Python skips it.")
     b.code(
         """# A comment starts with # and is ignored by Python.
 # Shift+Enter runs this cell.
@@ -175,7 +203,9 @@ print("You can print several lines")"""
     b.md(
         """## Variables
 
-A variable is a name that refers to a value. You do not declare a type first. Assignment uses `=`."""
+A variable is a **name that refers to a value**. You do not declare a type first. Assignment uses `=`.
+
+Text needs quotes. `city = Mumbai` looks up a name called Mumbai. `city = "Mumbai"` stores text."""
     )
     b.code(
         """city = "Mumbai"
@@ -184,10 +214,11 @@ print(city)
 print(riders)
 print(type(city), type(riders))"""
     )
+    b.md("**Modify:** change `city` to another city and run the cell again. The old value is gone.")
     b.md(
         """## Predict, then run
 
-Before you run the next cell, decide what it prints. Then run it and compare."""
+What does the next cell print? Three lines or one?"""
     )
     b.code(
         """label = "bike trips"
@@ -197,11 +228,17 @@ print(count)
 print(label, count)"""
     )
     b.md(
+        after_run(
+            "Three lines: `bike trips`, then `3`, then `bike trips 3`. "
+            "`print(a, b)` separates values with a space."
+        )
+    )
+    b.md(
         """## Indentation
 
 Python uses indentation to mean "this line belongs to the block above." Other languages often use `{}`. Here, spaces are syntax.
 
-Use 4 spaces (Colab's Tab key does this). Mixing Tab and spaces, or forgetting the indent after `if`, causes `IndentationError`."""
+Use **4 spaces** (Colab's Tab key does this). Mixing Tab and spaces, or forgetting the indent after `if`, causes `IndentationError`."""
     )
     b.code(
         """ready = True
@@ -213,7 +250,18 @@ print("This line runs either way")"""
     b.md(
         """## Reading a traceback
 
-The next cell **catches** an `IndentationError` so **Run all** can continue. Read the error name first, then the arrow that points at the problem line."""
+The next cells **catch** errors so **Run all** can continue. In real work the kernel would stop.
+
+Read the **error type** first (`NameError`, `IndentationError`), then the line it points at.
+
+`NameError` is the usual result of running cells out of order: you used a name that was never assigned in *this* runtime."""
+    )
+    b.code(
+        """try:
+    print(never_assigned)
+except NameError as exc:
+    print(type(exc).__name__)
+    print(exc)"""
     )
     b.code(
         """broken = "if True:\\nprint('this line forgot its indent')"
@@ -226,7 +274,7 @@ except IndentationError as exc:
     b.md("## Practice 00.1")
     b.md("Assign your name and a year to variables, then print both.")
     b.code(
-        """# Practice 00.1
+        """# Practice 00.1 — comment out the next two assignments and rewrite them.
 learner_name = "Alex"
 year = 2026
 print(learner_name)
@@ -239,12 +287,15 @@ print("Practice 00.1 passed.")"""
     )
     b.md(hint("00.1", "Use quotes for the name. Do not quote the year."))
     b.md("## Practice 00.2")
-    b.md("Build a greeting from two variables. Concatenate with `+` or use an f-string.")
+    b.md(
+        "Build a greeting from two variables using `+`. "
+        "(f-strings come in notebook 01; `+` is enough here.)"
+    )
     b.code(
         """# Practice 00.2
 first = "Priya"
 course = "Python Crash Course"
-greeting = f"Hi {first}, welcome to {course}."
+greeting = "Hi " + first + ", welcome to " + course + "."
 print(greeting)
 
 # Check 00.2
@@ -252,13 +303,14 @@ assert first in greeting and course in greeting
 assert greeting.startswith("Hi ")
 print("Practice 00.2 passed.")"""
     )
-    b.md(hint("00.2", "`f\"Hi {first}, welcome to {course}.\"` inserts the variable values into the string."))
+    b.md(hint("00.2", 'Glue pieces with `+`. Remember spaces inside the quoted bits: `"Hi "` not `"Hi"`.'))
     b.md(
         """## Common mistakes
 
-- Running cells out of order, then wondering why a name is missing.
+- Running cells out of order, then wondering why a name is missing (`NameError`).
 - Using `=` (assign) when you meant to compare later with `==`.
-- Forgetting quotes around text: `city = Mumbai` looks up a name; `city = "Mumbai"` stores text.
+- Forgetting quotes around text.
+- Editing a cell and not re-running it — the runtime still has the old value.
 """
     )
     b.md("## Recap")
@@ -269,9 +321,28 @@ print("Practice 00.2 passed.")"""
 - Tracebacks start with the error type; read that before the rest.
 """
     )
+    b.md(
+        understanding(
+            [
+                (
+                    "Where do variables live after you run a cell?",
+                    "In the runtime, in the order you actually ran cells — not in the markdown, and not on GitHub.",
+                ),
+                (
+                    "What should you read first in a traceback?",
+                    "The error type, such as `NameError` or `IndentationError`.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(solution_block("00.1", 'learner_name = "Alex"\nyear = 2026\nprint(learner_name)\nprint(year)'))
-    b.md(solution_block("00.2", 'first = "Priya"\ncourse = "Python Crash Course"\ngreeting = f"Hi {first}, welcome to {course}."'))
+    b.md(
+        solution_block(
+            "00.2",
+            'first = "Priya"\ncourse = "Python Crash Course"\ngreeting = "Hi " + first + ", welcome to " + course + "."',
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -296,7 +367,8 @@ def build_01() -> list[dict]:
     b.md("## Recap warm-up")
     b.code(
         """title = "values and strings"
-print(title.upper())"""
+print(title)
+print(type(title))"""
     )
     b.md(
         """## Values and types
@@ -309,7 +381,9 @@ print(title.upper())"""
 | `None` | `None` | missing / no value |
 | `str` | `"ride"` | text |
 
-`type(x)` reports the type. Python will not add a number to text until you convert one of them."""
+`type(x)` reports the type. Python will not add a number to text until you convert one of them.
+
+`/` always gives a `float` (`4 / 2` is `2.0`). `//` is integer division. `**` is power."""
     )
     b.code(
         """trips = 7
@@ -320,29 +394,50 @@ label = "commute"
 
 print(type(trips), type(distance_km), type(active), type(note), type(label))
 print(trips * distance_km)
+print("division", 5 / 2, "floor", 5 // 2, "power", 2 ** 3)
 print(3 == 3, 3 != 4, 3 < 4)
 print(True and False, True or False, not False)"""
+    )
+    b.md("## Predict: text plus a number")
+    b.md("The next cell **catches** `TypeError`. What goes wrong if you add `\"3\"` and `1`?")
+    b.code(
+        """try:
+    print("3" + 1)
+except TypeError as exc:
+    print(type(exc).__name__)
+    print(exc)
+print("fixed:", int("3") + 1)
+print("or text:", "3" + str(1))"""
     )
     b.md(
         """## Conversion
 
-`input()` in Colab always gives a **string**, even if the person typed `23`. Convert with `int()`, `float()`, or `str()`.
+If a value came from a form or a CSV cell, it is often a **string**, even when it looks like `23`. Convert with `int()`, `float()`, or `str()`.
 
-Bad conversions raise `ValueError`. Later you will catch that. For now, convert values you already know are numeric."""
+`int("19.0")` fails because of the decimal point. Use `int(float("19.0"))` when you need a whole number.
+
+Bad conversions raise `ValueError`. Notebook 05 will catch that on purpose."""
     )
     b.code(
-        """raw_age = "23"          # what input() would have returned
+        """raw_age = "23"          # a CSV cell or form field, not a number yet
 age = int(raw_age)
 print(age, type(age))
 print(age + 1)
 
 print(float("3.5"))
-print(str(40) + " km")"""
+print(str(40) + " km")
+try:
+    int("19.0")
+except ValueError as exc:
+    print("int on 19.0 failed:", exc)
+print("via float:", int(float("19.0")))"""
     )
     b.md(
-        """## Strings: index, slice, methods
+        """## Strings: index, slice, methods, f-strings
 
-Indexing starts at `0`. Slices are `[start:stop]` and **exclude** `stop`. Negative indexes count from the end."""
+Indexing starts at `0`. Slices are `[start:stop]` and **exclude** `stop`. Negative indexes count from the end.
+
+An f-string puts values into text: `f"{name} logged {trips} trips."`"""
     )
     b.code(
         """city = "Hyderabad"
@@ -350,12 +445,17 @@ print(city[0], city[-1])
 print(city[0:5])
 print(city[::-1])
 print(city.lower(), city.upper())
-print(city.replace("bad", "baad"))
 print("Hyder" in city)
 print(len(city))
 
 name = "ana"
 print(f"{name.title()} logged {trips} trips.")"""
+    )
+    b.md(
+        after_run(
+            "`city[0:5]` is `Hyder` (indexes 0–4). "
+            "The f-string prints `Ana logged 7 trips.`"
+        )
     )
     b.md("## Practice 01.1")
     b.md("Convert 22°C to Fahrenheit: `f = c * 9 / 5 + 32`.")
@@ -407,7 +507,21 @@ print("Practice 01.3 passed.")"""
 """
     )
     b.md("## Recap")
-    b.md("Types decide what operations are legal. Convert on purpose. Strings are sequences you can index, slice, and format.")
+    b.md("Types decide what operations are legal. Convert on purpose. Strings are sequences you can index, slice, and format with f-strings.")
+    b.md(
+        understanding(
+            [
+                (
+                    "What does int(\"19.0\") do in Python 3?",
+                    "It raises `ValueError`. Convert to `float` first, then to `int`.",
+                ),
+                (
+                    "What is \"Python\"[0:3]?",
+                    "`Pyt` — the end index is excluded.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(solution_block("01.1", "celsius = 22\nfahrenheit = celsius * 9 / 5 + 32"))
     b.md(solution_block("01.2", 'full = "Ada Lovelace"\nfirst_name = full.split()[0]\nlast_name = full.split()[1]'))
@@ -459,6 +573,12 @@ print(cities)
 
 point = (19.07, 72.87)
 print(point[0])
+lat, lon = point
+print("unpacked", lat, lon)
+try:
+    point[0] = 0
+except TypeError as exc:
+    print("tuples do not change:", type(exc).__name__)
 
 rider = {"id": 1, "city": "Mumbai", "hours": 2.0}
 print(rider["city"])
@@ -480,7 +600,8 @@ A list can hold dictionaries. A dictionary can hold lists. Draw the path: `rows[
     {"id": 2, "city": "Pune", "km": 3.0},
 ]
 print(rows[0]["city"])
-print([row["km"] for row in rows])"""
+print(rows[1]["km"])
+print(rows[0])"""
     )
     b.md(
         """## Aliases and copies
@@ -525,24 +646,21 @@ print("Practice 02.2 passed.")"""
     )
     b.md(hint("02.2", "Use curly braces and `key: value` pairs. `True` is a boolean, not `\"True\"`."))
     b.md("## Practice 02.3")
-    b.md("From the nested list `rows`, read the kilometers for rider id 2.")
+    b.md("From the nested list `rows`, read the kilometers for the **second** rider (`rows[1]`).")
     b.code(
         """# Practice 02.3
 rows = [
     {"id": 1, "km": 8.5},
     {"id": 2, "km": 3.0},
 ]
-km_for_two = None
-for row in rows:
-    if row["id"] == 2:
-        km_for_two = row["km"]
+km_for_two = rows[1]["km"]
 print(km_for_two)
 
 # Check 02.3
 assert km_for_two == 3.0
 print("Practice 02.3 passed.")"""
     )
-    b.md(hint("02.3", "Loop the list. When `row[\"id\"]` is `2`, store `row[\"km\"]`."))
+    b.md(hint("02.3", "The second dictionary is index `1`. Then use `[\"km\"]`."))
     b.md(
         """## Common mistakes
 
@@ -552,7 +670,21 @@ print("Practice 02.3 passed.")"""
 """
     )
     b.md("## Recap")
-    b.md("Lists grow and change. Tuples freeze a sequence. Dicts map names to values and are the usual shape of one data row.")
+    b.md("Lists grow and change. Tuples freeze a sequence (good for a lat/lon pair). Dicts map names to values and are the usual shape of one data row.")
+    b.md(
+        understanding(
+            [
+                (
+                    "Which collection maps a column name to a value for one row?",
+                    "A dictionary. A list of dictionaries is a small table.",
+                ),
+                (
+                    "What does b = a mean when a is a list?",
+                    "Both names refer to the same list. Use `.copy()` for a separate list.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(
         solution_block(
@@ -569,7 +701,7 @@ print("Practice 02.3 passed.")"""
     b.md(
         solution_block(
             "02.3",
-            'km_for_two = None\nfor row in rows:\n    if row["id"] == 2:\n        km_for_two = row["km"]',
+            'km_for_two = rows[1]["km"]',
         )
     )
     b.md(nav(fn))
@@ -603,6 +735,8 @@ print(sum(hours), hours[-1])"""
 
 Python checks conditions from the top. The first true branch runs, then the chain stops.
 
+**Truthiness:** empty lists, empty strings, `0`, and `None` count as false in an `if`. A non-empty list counts as true.
+
 There is no `input()` in these notebooks so **Run all** never waits for a person. Treat variables as if they came from a form."""
     )
     b.code(
@@ -617,7 +751,11 @@ print(status)
 
 valid_cities = {"Mumbai", "Pune", "Bengaluru"}
 city = "Pune"
-print(city in valid_cities)"""
+print(city in valid_cities)
+
+if []:
+    print("empty list would not print this")
+print("empty list is falsy")"""
     )
     b.md(
         """## Loops
@@ -626,7 +764,8 @@ print(city in valid_cities)"""
 - `range(n)` is `0 .. n-1`.
 - `enumerate(sequence)` gives `(index, value)`.
 - `zip(a, b)` walks two sequences together.
-- `while` repeats until the condition becomes false. Update the variable, or it never ends.
+- `while` repeats until the condition becomes false. **Update the counter**, or it never ends.
+- `continue` skips the rest of this round. `break` leaves the loop.
 
 Nested loops are just loops inside loops, not a third kind of loop."""
     )
@@ -646,7 +785,20 @@ for h, d in zip(hours, km):
 total = 0
 for h in hours:
     total += h
-print("total hours", total)"""
+print("total hours", total)
+
+n = 0
+while n < 3:
+    print("while", n)
+    n += 1
+
+for km_value in [1.2, 8.0, 3.4, 12.1]:
+    if km_value < 5:
+        continue
+    print("long trip", km_value)
+    if km_value > 10:
+        print("stopping after the first very long trip")
+        break"""
     )
     b.md("## Practice 03.1")
     b.md("Classify `score` as `\"fail\"` (< 40), `\"pass\"` (40–74), or `\"distinction\"` (75+).")
@@ -718,12 +870,26 @@ print("Practice 03.4 passed.")"""
         """## Common mistakes
 
 - Writing `if score > 40` and `if score > 75` as two separate `if`s when you needed `elif`.
-- Forgetting to update the `while` counter.
+- Forgetting to update the `while` counter (`n += 1`), which never ends.
 - Using `range(len(xs))` when `for x in xs` would be clearer.
 """
     )
     b.md("## Recap")
     b.md("Branches choose a path. Loops repeat a path. Accumulators remember what you have seen so far.")
+    b.md(
+        understanding(
+            [
+                (
+                    "What is a nested loop?",
+                    "A loop that runs inside another loop — not a third kind of loop besides `for` and `while`.",
+                ),
+                (
+                    "What does enumerate(xs) yield each step?",
+                    "A pair `(index, value)`, starting the index at 0.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(
         solution_block(
@@ -801,7 +967,20 @@ def min_max(nums):
     return min(nums), max(nums)
 
 low, high = min_max([3, 9, 4])
-print(low, high)"""
+print(low, high)
+
+def shout(message):
+    print(message.upper())
+
+result = shout("ok")
+print("shout returned", result)
+
+n = 10
+def add_one(x):
+    n = x + 1
+    return n
+
+print("function result", add_one(3), "outer n still", n)"""
     )
     b.md(
         """## Comprehensions
@@ -881,6 +1060,20 @@ print("Practice 04.3 passed.")"""
     )
     b.md("## Recap")
     b.md("Functions name an idea, isolate scope, and return results. Comprehensions are loops that build a collection in one expression.")
+    b.md(
+        understanding(
+            [
+                (
+                    "If a function has no return statement, what does it return?",
+                    "`None`. Printing inside the function is a side effect, not a return value.",
+                ),
+                (
+                    "Does a list comprehension change the original list?",
+                    "No. It builds a **new** list.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(solution_block("04.1", "def area(radius, pi=3.14159):\n    return pi * radius ** 2"))
     b.md(
@@ -930,11 +1123,24 @@ print(double(21))"""
 Catch only errors you expect. Bare `except:` hides bugs. After you convert data, `assert` the shape you promised."""
     )
     b.code(
-        """raw = "not a number"
+        """# Syntax: caught so Run all continues
+try:
+    compile("if True print('missing colon')", "<cell>", "exec")
+except SyntaxError as exc:
+    print("syntax:", type(exc).__name__)
+
+# Runtime
+raw = "not a number"
 try:
     int(raw)
 except ValueError as exc:
-    print("conversion failed:", exc)
+    print("runtime:", type(exc).__name__, exc)
+
+# Logic: the cell runs, the answer is still wrong
+km = [8.0, 4.0]
+wrong_mean = sum(km) / 3
+right_mean = sum(km) / len(km)
+print("logic bug mean", wrong_mean, "correct mean", right_mean)
 
 def require_positive(hours):
     if hours < 0:
@@ -952,9 +1158,9 @@ assert require_positive(2) == 2"""
     b.md(
         """## Modules and files
 
-`import math` loads a library. Colab's files live in a temporary folder. This notebook writes next to the working directory so it also works in GitHub Actions.
+`import math` loads a library. Colab files live in a **temporary** folder (`/content` on Colab). Restarting the runtime can delete them. This notebook writes under `Path.cwd() / "_course_data"` so it also works in GitHub Actions.
 
-Always open files with a `with` block so they close even if something fails."""
+Always open files with a `with` block so they close even if something fails. Prefer `pathlib.Path` over raw `"/tmp/file.csv"` strings."""
     )
     b.code(
         """import csv
@@ -1044,6 +1250,20 @@ print("Practice 05.3 passed.")"""
     )
     b.md("## Recap")
     b.md("Name the error, catch only what you expect, and keep data in files you control. JSON and CSV are the usual hand-off formats before pandas.")
+    b.md(
+        understanding(
+            [
+                (
+                    "int(\"bike\") is which kind of problem?",
+                    "A runtime `ValueError`. The line is legal Python; it fails while running.",
+                ),
+                (
+                    "Why open files with a with block?",
+                    "The file is closed even if the cell fails halfway through.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(
         solution_block(
@@ -1113,13 +1333,15 @@ Libraries are objects with methods: `model.fit(X, y)`. A tiny class below shows 
         return [row[name] for row in self.rows]
 
 raw_rows = [
-    {"id": "1", "city": "Mumbai", "hours": "2", "km": "8.5", "returned": "yes"},
-    {"id": "2", "city": "Pune", "hours": "", "km": "3.0", "returned": "yes"},
+    {"id": "1", "city": "Mumbai", "hours": "2", "km": "8.0", "returned": "yes"},
     {"id": "2", "city": "Pune", "hours": "", "km": "3.0", "returned": "yes"},
     {"id": "3", "city": "Mumbai", "hours": "1", "km": "4.0", "returned": "no"},
     {"id": "4", "city": "Goa", "hours": "abc", "km": "5.0", "returned": "yes"},
+    {"id": "5", "city": "Pune", "hours": "3", "km": "9.0", "returned": "yes"},
+    {"id": "5", "city": "Pune", "hours": "3", "km": "9.0", "returned": "yes"},
+    {"id": "6", "city": "Mumbai", "hours": "2", "km": "18.0", "returned": "no"},
 ]
-print(Table(raw_rows).n_rows)"""
+print("raw rows", Table(raw_rows).n_rows)"""
     )
     b.md("## Clean, then transform")
     b.code(
@@ -1217,8 +1439,13 @@ train_scaled = min_max_transform(train, stats)
 valid_scaled = min_max_transform(valid, stats)
 print("train ids", [row["id"] for row in train])
 print("valid ids", [row["id"] for row in valid])
-print(stats)
-print(train_scaled[0])"""
+print("train-only scaler", stats)
+
+leaky_max = max(row["km"] for row in trips)
+train_max = stats["km"]["max"]
+print("km max on all rows", leaky_max)
+print("km max on train only", train_max)
+print("leaking would shrink train values because the 18 km row sits in validation")"""
     )
     b.md("## Practice 06.1")
     b.md("Return only rows whose `hours` is at least 2.")
@@ -1228,7 +1455,7 @@ long_enough = [row for row in trips if row["hours"] >= 2]
 print(long_enough)
 
 # Check 06.1
-assert [row["id"] for row in long_enough] == [1]
+assert [row["id"] for row in long_enough] == [1, 5, 6]
 print("Practice 06.1 passed.")"""
     )
     b.md(hint("06.1", "A list comprehension with `if row[\"hours\"] >= 2`."))
@@ -1246,7 +1473,7 @@ mean_km = {city: sums[city] / counts[city] for city in sums}
 print(mean_km)
 
 # Check 06.2
-assert abs(mean_km["Mumbai"] - 6.25) < 1e-9
+assert abs(mean_km["Mumbai"] - 10.0) < 1e-9
 print("Practice 06.2 passed.")"""
     )
     b.md(hint("06.2", "Keep a running sum and a count per city, then divide."))
@@ -1259,8 +1486,8 @@ y = [row["returned"] for row in trips]
 print(X, y)
 
 # Check 06.3
-assert X[0] == [2.0, 8.5]
-assert y == [True, False]
+assert X[0] == [2.0, 8.0]
+assert y == [True, False, True, False]
 print("Practice 06.3 passed.")"""
     )
     b.md(hint("06.3", "Two comprehensions: one nested list for features, one list for the boolean target."))
@@ -1274,6 +1501,20 @@ print("Practice 06.3 passed.")"""
     )
     b.md("## Recap")
     b.md("Cleaning, splitting, and scaling are Python problems first. Libraries automate the same steps; they do not replace them.")
+    b.md(
+        understanding(
+            [
+                (
+                    "When should you compute min/max for scaling?",
+                    "On the training rows only, then apply those bounds to validation.",
+                ),
+                (
+                    "Where does the target column belong?",
+                    "Out of X, stored separately as y. If it stays in X, a model can cheat.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(solution_block("06.1", "long_enough = [row for row in trips if row[\"hours\"] >= 2]"))
     b.md(
@@ -1326,6 +1567,21 @@ Suggested steps:
 6. Drop the target from features.
 7. Deterministic 80/20 split by `id`.
 8. Min-max scale `hours`, `km`, and `km_per_hour` using **train** mins and maxes only.
+
+What should happen to each raw row:
+
+| id | Problem | Fate |
+|---|---|---|
+| 1 | clean | keep |
+| 2 | blank `hours` | drop missing |
+| 3 | clean | keep |
+| 4 | appears twice | keep first, drop duplicate |
+| 5 | `hours` is `abc` | drop invalid |
+| 6 | clean | keep |
+| 7 | clean (teen rider) | keep |
+| 8 | clean | keep |
+
+Nine data rows in, six useful rows out. Sorted ids `[1, 3, 4, 6, 7, 8]`; 80% train is the first four.
 """
     )
     b.md("## The raw file")
@@ -1417,8 +1673,15 @@ def prepare(csv_text):
     return cleaned, report
 
 trips, quality = prepare(RAW_CSV)
-print(quality)
-print(len(trips), "rows")
+print("quality:", quality)
+print("kept ids:", [row["id"] for row in trips])
+print(
+    f"{quality['rows_in']} in → "
+    f"missing {quality['dropped_missing']}, "
+    f"invalid {quality['dropped_invalid']}, "
+    f"duplicate {quality['dropped_duplicate']} → "
+    f"{quality['rows_out']} out"
+)
 
 # Check 07.1
 assert quality["rows_in"] == 9
@@ -1548,23 +1811,51 @@ print("Practice 07.3 passed.")"""
     )
     b.md("## Recap")
     b.md("A usable ML dataset is a software product: parsed, typed, documented, split, and checked. You built that product in Python.")
+    b.md(
+        understanding(
+            [
+                (
+                    "Does this capstone ask you to train a model?",
+                    "No. Stop after a clean, split, scaled table. Libraries come next.",
+                ),
+                (
+                    "pandas dropna + sklearn train_test_split is closest to which step here?",
+                    "Cleaning rows, then splitting before you scale.",
+                ),
+            ]
+        )
+    )
     b.md("## Solutions")
     b.md(
         solution_block(
             "07.1",
-            "Use prepare(RAW_CSV) as in the practice cell: skip duplicate ids, blank hours, and non-numeric hours.",
+            """# Skip duplicate ids, blank hours, and non-numeric hours.
+# Keep 1, 3, 4, 6, 7, 8. Derive km_per_hour = km / hours.
+cleaned, report = prepare(RAW_CSV)
+assert report["rows_out"] == 6""",
         )
     )
     b.md(
         solution_block(
             "07.2",
-            "split_rows sorts by id and cuts at 80%. fit_scaler reads train mins/maxes. features_and_target stacks hours, km, km_per_hour.",
+            """train, valid = split_rows(trips, 0.8)
+# ids [1, 3, 4, 6] then [7, 8]
+scaler = fit_scaler(train, FEATURE_COLUMNS)
+X_train, y_train = features_and_target(apply_scaler(train, scaler))""",
         )
     )
     b.md(
         solution_block(
             "07.3",
-            "Write quality, feature_columns, target, train_ids, valid_ids, and scaler to JSON, then reload and assert disjoint ids.",
+            """bundle = {
+    "quality": quality,
+    "feature_columns": FEATURE_COLUMNS,
+    "target": TARGET,
+    "train_ids": [row["id"] for row in train],
+    "valid_ids": [row["id"] for row in valid],
+    "scaler": scaler,
+}
+export_path.write_text(json.dumps(bundle, indent=2), encoding="utf-8")""",
         )
     )
     b.md(nav(fn))
