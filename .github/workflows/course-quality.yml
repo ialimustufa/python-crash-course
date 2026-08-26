@@ -38,14 +38,14 @@ jobs:
       fail-fast: false
       matrix:
         notebook:
-          - notebooks/00_Colab_and_First_Program.ipynb
-          - notebooks/01_Values_Strings_and_Conversion.ipynb
-          - notebooks/02_Collections_Indexing_and_Slicing.ipynb
-          - notebooks/03_Conditionals_and_Loops.ipynb
-          - notebooks/04_Functions_Scope_and_Comprehensions.ipynb
-          - notebooks/05_Errors_Modules_and_Files.ipynb
-          - notebooks/06_Python_Data_Workflows_for_ML.ipynb
-          - notebooks/07_Fundamentals_Capstone.ipynb
+          - 00_Colab_and_First_Program.ipynb
+          - 01_Values_Strings_and_Conversion.ipynb
+          - 02_Collections_Indexing_and_Slicing.ipynb
+          - 03_Conditionals_and_Loops.ipynb
+          - 04_Functions_Scope_and_Comprehensions.ipynb
+          - 05_Errors_Modules_and_Files.ipynb
+          - 06_Python_Data_Workflows_for_ML.ipynb
+          - 07_Fundamentals_Capstone.ipynb
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -60,11 +60,11 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
           PYTHONHASHSEED: "0"
-        run: python scripts/validate_course.py --execute "${{ matrix.notebook }}" --artifact-dir artifacts
+        run: python scripts/validate_course.py --execute "notebooks/${{ matrix.notebook }}" --artifact-dir artifacts
       - name: Upload failed notebook
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: failed-${{ replace(matrix.notebook, '/', '-') }}
+          name: failed-${{ matrix.notebook }}
           path: artifacts
           if-no-files-found: ignore
