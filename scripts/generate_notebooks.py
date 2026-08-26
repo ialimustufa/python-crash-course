@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import base64
+import re
 import sys
 import textwrap
 from pathlib import Path
@@ -148,16 +149,65 @@ def solution_block(practice_id: str, code: str) -> str:
 </details>"""
 
 
+_NBSP = "\u00a0"
+_LABEL_PAD = "&nbsp;" * 8
+
+
+def _pad_label(text: str) -> str:
+    """Widen labels so Mermaid SVG rects do not clip the last character."""
+    cleaned = (
+        text.replace(_NBSP, " ")
+        .replace("&nbsp;", "")
+        .strip()
+        .strip('"')
+        .strip()
+    )
+    return f"{cleaned}{_LABEL_PAD}"
+
+
+def format_mermaid(source: str) -> str:
+    """Normalize a flowchart so GitHub and mermaid.ink keep node text readable."""
+    body = textwrap.dedent(source).strip()
+    body = re.sub(r"^%%\{init:.*?\}%%\s*", "", body)
+    body = re.sub(
+        r"(subgraph\s+[A-Za-z][A-Za-z0-9]*\s*)\[([^\]]+)\]",
+        lambda m: f'{m.group(1)}["{_pad_label(m.group(2))}"]',
+        body,
+    )
+    body = re.sub(
+        r'([A-Za-z][A-Za-z0-9]*)\["([^"]*)"\]',
+        lambda m: f'{m.group(1)}["{_pad_label(m.group(2))}"]',
+        body,
+    )
+    body = re.sub(
+        r'([A-Za-z][A-Za-z0-9]*)\{"([^"]*)"\}',
+        lambda m: f'{m.group(1)}{{"{_pad_label(m.group(2))}"}}',
+        body,
+    )
+    body = re.sub(
+        r'([A-Za-z][A-Za-z0-9]*)\[([^\]"\n]+)\]',
+        lambda m: f'{m.group(1)}["{_pad_label(m.group(2))}"]',
+        body,
+    )
+    body = re.sub(
+        r"([A-Za-z][A-Za-z0-9]*)\{([^{}\"\n]+)\}",
+        lambda m: f'{m.group(1)}{{"{_pad_label(m.group(2))}"}}',
+        body,
+    )
+    return body
+
+
 def mermaid(source: str, alt: str) -> str:
     """Mermaid for GitHub, plus an SVG so the same diagram shows in Colab."""
-    body = textwrap.dedent(source).strip()
+    raw = textwrap.dedent(source).strip()
+    body = format_mermaid(raw)
     encoded = base64.urlsafe_b64encode(body.encode("utf-8")).decode("ascii")
     url = f"https://mermaid.ink/svg/{encoded}"
     return (
         f"![{alt}]({url})\n\n"
         "<details>\n"
         "<summary>Diagram source</summary>\n\n"
-        f"```mermaid\n{body}\n```\n\n"
+        f"```mermaid\n{raw}\n```\n\n"
         "</details>"
     )
 

@@ -26,11 +26,11 @@ There is no `input()` in the maintained notebooks, so they never wait for a prom
 
 ```mermaid
 flowchart LR
-  startNode[Open notebook 00] --> copyDrive[Save a copy in Drive]
-  copyDrive --> runTop[Run cells top to bottom]
-  runTop --> rewrite[Rewrite the practice cells]
-  rewrite --> nextNb[Open the next notebook]
-  nextNb --> optionalDash[Optional: tick progress on Pages]
+  startNode["Open notebook 00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> copyDrive["Save a copy in Drive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  copyDrive --> runTop["Run cells top to bottom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  runTop --> rewrite["Rewrite the practice cells&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  rewrite --> nextNb["Open the next notebook&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  nextNb --> optionalDash["Optional: tick progress on Pages&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
 ```
 
 ## Course path
@@ -50,17 +50,17 @@ About six hours if you do the practices instead of only reading.
 
 ```mermaid
 flowchart TB
-  subgraph pythonBasics [Python basics]
-    n00[00 Colab]
-    n01[01 Values]
-    n02[02 Collections]
-    n03[03 Conditionals]
-    n04[04 Functions]
-    n05[05 Files]
+  subgraph pythonBasics ["Python basics&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n00["00 Colab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n01["01 Values&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n02["02 Collections&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n03["03 Conditionals&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n04["04 Functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n05["05 Files&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
   end
-  subgraph mlReady [Ready for ML libraries]
-    n06[06 Data workflows]
-    n07[07 Capstone]
+  subgraph mlReady ["Ready for ML libraries&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n06["06 Data workflows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+    n07["07 Capstone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
   end
   n00 --> n01 --> n02 --> n03 --> n04 --> n05 --> n06 --> n07
 ```
@@ -73,10 +73,10 @@ Concept sections in each notebook include Mermaid diagrams of the idea (runtime,
 
 ```mermaid
 flowchart LR
-  explain[Explain] --> predict[Predict]
-  predict --> runCell[Run]
-  runCell --> practice[Practice]
-  practice --> check[Check]
+  explain["Explain&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> predict["Predict&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  predict --> runCell["Run&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  runCell --> practice["Practice&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  practice --> check["Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
 ```
 
 - **Predict** questions ask you to decide the output before you run. Answers sit under *After you run*.
@@ -92,16 +92,16 @@ You are done when every capstone check prints `passed`.
 
 ```mermaid
 flowchart TB
-  rawCsv[Dirty bike-share CSV] --> parseRows[Parse to dictionaries]
-  parseRows --> dropBad[Drop missing, invalid, and duplicate rows]
-  dropBad --> derive[Derive km_per_hour and age_group]
-  derive --> splitData["Sort by id and split 80/20"]
-  splitData --> trainRows[Train rows]
-  splitData --> validRows[Validation rows]
-  trainRows --> fitScale[Fit min-max on train only]
-  fitScale --> scaleTrain[Scale train]
-  fitScale --> scaleValid[Scale validation]
-  scaleTrain --> bundle[Export JSON bundle]
+  rawCsv["Dirty bike-share CSV&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> parseRows["Parse to dictionaries&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  parseRows --> dropBad["Drop missing, invalid, and duplicate rows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  dropBad --> derive["Derive km_per_hour and age_group&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  derive --> splitData["Sort by id and split 80/20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  splitData --> trainRows["Train rows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  splitData --> validRows["Validation rows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  trainRows --> fitScale["Fit min-max on train only&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  fitScale --> scaleTrain["Scale train&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  fitScale --> scaleValid["Scale validation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  scaleTrain --> bundle["Export JSON bundle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
   scaleValid --> bundle
 ```
 
@@ -121,11 +121,11 @@ The dashboard writes Colab links for **your** owner/repo/branch. Export JSON if 
 
 ```mermaid
 flowchart TB
-  forkRepo[Fork the repository] --> enableActions[Enable Actions]
-  enableActions --> enablePages["Settings: Pages source is GitHub Actions"]
-  enablePages --> deployDash[Run Deploy course dashboard]
-  deployDash --> yourSite["github.io dashboard for your fork"]
-  yourSite --> yourColab[Colab links open notebooks on your fork]
+  forkRepo["Fork the repository&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> enableActions["Enable Actions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  enableActions --> enablePages["Settings: Pages source is GitHub Actions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  enablePages --> deployDash["Run Deploy course dashboard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  deployDash --> yourSite["github.io dashboard for your fork&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  yourSite --> yourColab["Colab links open notebooks on your fork&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
 ```
 
 ## What to learn next
@@ -143,12 +143,12 @@ The verbs stay the same: clean, split, scale, check.
 
 ```mermaid
 flowchart LR
-  readme[README] --> notebooks[notebooks/ current course]
-  readme --> site[site/ Pages dashboard]
-  readme --> workflows[GitHub Actions]
-  readme --> legacy[legacy/ archived classroom files]
-  workflows --> quality[course-quality]
-  workflows --> pagesDeploy[deploy-pages]
+  readme["README&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> notebooks["notebooks/ current course&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  readme --> site["site/ Pages dashboard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  readme --> workflows["GitHub Actions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  readme --> legacy["legacy/ archived classroom files&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  workflows --> quality["course-quality&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  workflows --> pagesDeploy["deploy-pages&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
 ```
 
 Maintained materials are `notebooks/` and `site/`. CI executes only the numbered notebooks. Historical files stay in `legacy/` and are not part of the path above.

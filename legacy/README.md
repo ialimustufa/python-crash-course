@@ -6,9 +6,9 @@ This folder is **unmaintained archived classroom material** from earlier live se
 
 ```mermaid
 flowchart LR
-  learner[Learner] --> current[notebooks/ maintained course]
-  learner -.-> archive[legacy/ historical snapshot]
-  current --> colab[Google Colab]
+  learner["Learner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"] --> current["notebooks/ maintained course&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  learner -.-> archive["legacy/ historical snapshot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  current --> colab["Google Colab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
 ```
 
 ## What is here
