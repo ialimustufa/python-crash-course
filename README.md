@@ -37,16 +37,16 @@ flowchart LR
 
 | # | Notebook | Time | What you learn | Colab |
 |---|---|---|---|---|
-| 00 | [Colab and your first program](notebooks/00_Colab_and_First_Program.ipynb) | 35 min | Runtime, print, variables, indentation, reading errors | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/00_Colab_and_First_Program.ipynb) |
-| 01 | [Values, strings, and conversion](notebooks/01_Values_Strings_and_Conversion.ipynb) | 45 min | Types, `/` vs `//`, converting CSV-like strings, slices, f-strings | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/01_Values_Strings_and_Conversion.ipynb) |
-| 02 | [Collections, indexing, and slicing](notebooks/02_Collections_Indexing_and_Slicing.ipynb) | 50 min | Lists, tuples, dicts, sets, nested rows, copies vs aliases | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/02_Collections_Indexing_and_Slicing.ipynb) |
-| 03 | [Conditionals and loops](notebooks/03_Conditionals_and_Loops.ipynb) | 50 min | `if`/`elif`, `for`/`while`, `enumerate`, `zip`, accumulators | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/03_Conditionals_and_Loops.ipynb) |
-| 04 | [Functions, scope, and comprehensions](notebooks/04_Functions_Scope_and_Comprehensions.ipynb) | 50 min | `def`, returns, local names, list/dict comprehensions | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/04_Functions_Scope_and_Comprehensions.ipynb) |
-| 05 | [Errors, modules, and files](notebooks/05_Errors_Modules_and_Files.ipynb) | 50 min | Syntax vs runtime vs logic errors, `pathlib`, JSON, CSV | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/05_Errors_Modules_and_Files.ipynb) |
-| 06 | [Python data workflows for ML](notebooks/06_Python_Data_Workflows_for_ML.ipynb) | 55 min | Clean rows, features vs target, split first, train-only scaling | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/06_Python_Data_Workflows_for_ML.ipynb) |
+| 00 | [Colab and your first program](notebooks/00_Colab_and_First_Program.ipynb) | 40 min | Runtime, print, variables, `+=`, unpacking, indentation, reading errors | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/00_Colab_and_First_Program.ipynb) |
+| 01 | [Values, strings, and conversion](notebooks/01_Values_Strings_and_Conversion.ipynb) | 55 min | Types, `/` `//` `%`, `strip`/`replace`/`join`, `is None`, converting CSV-like strings, f-strings | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/01_Values_Strings_and_Conversion.ipynb) |
+| 02 | [Collections, indexing, and slicing](notebooks/02_Collections_Indexing_and_Slicing.ipynb) | 60 min | Lists, tuples, dicts, sets, `in` on keys, `.get`/`.items()`, `sorted` vs `.sort()`, copies | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/02_Collections_Indexing_and_Slicing.ipynb) |
+| 03 | [Conditionals and loops](notebooks/03_Conditionals_and_Loops.ipynb) | 60 min | `if`/`elif`, loops, dict counts, `any`/`all`, missing vs `0` | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/03_Conditionals_and_Loops.ipynb) |
+| 04 | [Functions, scope, and comprehensions](notebooks/04_Functions_Scope_and_Comprehensions.ipynb) | 55 min | `def`, returns, docstrings/`help`, copy-not-mutate, list/dict comprehensions | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/04_Functions_Scope_and_Comprehensions.ipynb) |
+| 05 | [Errors, modules, and files](notebooks/05_Errors_Modules_and_Files.ipynb) | 60 min | Errors, `pathlib`, JSON, CSV, `datetime`, `NaN` / `isclose` | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/05_Errors_Modules_and_Files.ipynb) |
+| 06 | [Python data workflows for ML](notebooks/06_Python_Data_Workflows_for_ML.ipynb) | 65 min | Clean rows, codes and one-hot, table shapes, split first, train-only scaling | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/06_Python_Data_Workflows_for_ML.ipynb) |
 | 07 | [Fundamentals capstone](notebooks/07_Fundamentals_Capstone.ipynb) | 60 min | Prepare a dirty bike-share CSV end to end — no model yet | [Open](https://colab.research.google.com/github/ialimustufa/python-crash-course/blob/master/notebooks/07_Fundamentals_Capstone.ipynb) |
 
-About six hours if you do the practices instead of only reading.
+About seven to eight hours if you do the practices instead of only reading.
 
 ```mermaid
 flowchart TB

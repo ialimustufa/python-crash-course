@@ -8,10 +8,10 @@
       "id": "00",
       "title": "Colab and your first program",
       "file": "notebooks/00_Colab_and_First_Program.ipynb",
-      "minutes": 35,
+      "minutes": 40,
       "objectives": [
         "Open Colab, save a copy, and run cells in order",
-        "Use comments, print, and variables",
+        "Use comments, print, variables, +=, and unpacking",
         "Read a short traceback"
       ],
       "milestones": [
@@ -39,6 +39,16 @@
             "The cell execution count"
           ],
           "answer": 0
+        },
+        {
+          "id": "q3",
+          "question": "If trips is 10, what does trips += 3 store?",
+          "choices": [
+            "103, because += concatenates digits",
+            "13",
+            "10, because += is only a comment"
+          ],
+          "answer": 1
         }
       ]
     },
@@ -46,11 +56,11 @@
       "id": "01",
       "title": "Values, strings, and conversion",
       "file": "notebooks/01_Values_Strings_and_Conversion.ipynb",
-      "minutes": 45,
+      "minutes": 55,
       "objectives": [
         "Name int, float, bool, None, and str",
-        "Convert types on purpose",
-        "Index, slice, and format strings"
+        "Convert types after strip and replace",
+        "Index, slice, join, and format strings"
       ],
       "milestones": [
         { "id": "opened", "label": "Opened the notebook in Colab" },
@@ -73,6 +83,16 @@
           "question": "\"Python\"[0:3] is which of these?",
           "choices": ["Pyt", "Pyth", "Python"],
           "answer": 0
+        },
+        {
+          "id": "q3",
+          "question": "How should you test that a value is missing?",
+          "choices": [
+            "value is None",
+            "value == 0",
+            "value == \"None\""
+          ],
+          "answer": 0
         }
       ]
     },
@@ -80,10 +100,10 @@
       "id": "02",
       "title": "Collections, indexing, and slicing",
       "file": "notebooks/02_Collections_Indexing_and_Slicing.ipynb",
-      "minutes": 50,
+      "minutes": 60,
       "objectives": [
         "Use lists, tuples, dicts, and sets",
-        "Store a data row as a dictionary",
+        "Check dict keys with in and .get",
         "Explain aliasing versus a copy"
       ],
       "milestones": [
@@ -107,6 +127,16 @@
             "Python freezes both lists"
           ],
           "answer": 1
+        },
+        {
+          "id": "q3",
+          "question": "Does \"Mumbai\" in {\"city\": \"Mumbai\"} succeed?",
+          "choices": [
+            "Yes, because Mumbai is stored in the dict",
+            "No; in on a dict checks keys, and the key is city",
+            "It raises TypeError"
+          ],
+          "answer": 1
         }
       ]
     },
@@ -114,11 +144,11 @@
       "id": "03",
       "title": "Conditionals and loops",
       "file": "notebooks/03_Conditionals_and_Loops.ipynb",
-      "minutes": 50,
+      "minutes": 60,
       "objectives": [
         "Write if/elif/else branches",
         "Loop with for, range, enumerate, and zip",
-        "Build a total with an accumulator"
+        "Count with a dict and tell missing blanks from 0"
       ],
       "milestones": [
         { "id": "opened", "label": "Opened the notebook in Colab" },
@@ -145,6 +175,16 @@
             "Only the length"
           ],
           "answer": 1
+        },
+        {
+          "id": "q3",
+          "question": "What is the usual way to count trips per city in pure Python?",
+          "choices": [
+            "counts[city] = counts.get(city, 0) + 1",
+            "A third kind of loop called count",
+            "print(city) once per unique city"
+          ],
+          "answer": 0
         }
       ]
     },
@@ -152,10 +192,10 @@
       "id": "04",
       "title": "Functions, scope, and comprehensions",
       "file": "notebooks/04_Functions_Scope_and_Comprehensions.ipynb",
-      "minutes": 50,
+      "minutes": 55,
       "objectives": [
         "Define functions with arguments and return values",
-        "Keep names in local scope",
+        "Read a docstring and return a copy instead of mutating",
         "Rewrite a simple loop as a comprehension"
       ],
       "milestones": [
@@ -179,6 +219,16 @@
             "A CSV file"
           ],
           "answer": 0
+        },
+        {
+          "id": "q3",
+          "question": "How should a function add kilometres to a row dict?",
+          "choices": [
+            "Change row in place so the caller sees it",
+            "Copy with dict(row), change the copy, return it",
+            "Use global"
+          ],
+          "answer": 1
         }
       ]
     },
@@ -186,11 +236,11 @@
       "id": "05",
       "title": "Errors, modules, and files",
       "file": "notebooks/05_Errors_Modules_and_Files.ipynb",
-      "minutes": 50,
+      "minutes": 60,
       "objectives": [
         "Catch a specific exception",
-        "Import from the standard library",
-        "Read and write JSON and CSV"
+        "Import datetime and statistics from the standard library",
+        "Read JSON, CSV, and detect NaN with math.isnan"
       ],
       "milestones": [
         { "id": "opened", "label": "Opened the notebook in Colab" },
@@ -213,6 +263,12 @@
             "Colab requires it for print()"
           ],
           "answer": 1
+        },
+        {
+          "id": "q3",
+          "question": "datetime.strptime(\"2026-08-27\", \"%Y-%m-%d\").month is which of these?",
+          "choices": ["27", "8", "2026"],
+          "answer": 1
         }
       ]
     },
@@ -220,10 +276,10 @@
       "id": "06",
       "title": "Python data workflows for ML",
       "file": "notebooks/06_Python_Data_Workflows_for_ML.ipynb",
-      "minutes": 55,
+      "minutes": 65,
       "objectives": [
         "Clean a list of dictionaries",
-        "Separate features from a target",
+        "Encode categories; reshape to numeric X",
         "Split first, then scale with train-only statistics"
       ],
       "milestones": [
@@ -251,6 +307,16 @@
             "Deleted so nothing remains to predict"
           ],
           "answer": 1
+        },
+        {
+          "id": "q3",
+          "question": "Why sort unique city names before assigning integer codes?",
+          "choices": [
+            "So the mapping stays stable if row order changes",
+            "Because models require alphabetical cities",
+            "So validation rows get different codes from train"
+          ],
+          "answer": 0
         }
       ]
     },
@@ -289,8 +355,19 @@
             "Writing a lambda sort key"
           ],
           "answer": 1
+        },
+        {
+          "id": "q3",
+          "question": "pandas to_datetime is closest to which earlier skill?",
+          "choices": [
+            "datetime.strptime on a date string",
+            "print(Hello, Colab)",
+            "A nested loop that flattens a matrix"
+          ],
+          "answer": 0
         }
       ]
     }
   ]
 }
+

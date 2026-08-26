@@ -236,11 +236,12 @@ def build_00() -> list[dict]:
         header(
             fn,
             SEQUENCE[0][1],
-            35,
+            40,
             "None. This is the start of the course.",
             [
                 "Open Colab, save your own copy, and run cells in order",
                 "Use comments, `print()`, and variables",
+                "Update a name with `=` and `+=`",
                 "Explain why indentation creates a code block",
                 "Read a short traceback and name the error type",
                 "Write a small greeting program from variables",
@@ -321,6 +322,38 @@ print(label, count)"""
             "Three lines: `bike trips`, then `3`, then `bike trips 3`. "
             "`print(a, b)` separates values with a space."
         )
+    )
+    b.md(
+        """## Updating a name
+
+Assignment is not algebra. `riders = riders + 1` means: take the current value, add one, store it back under the same name. Python has no `++`. The short form is `riders += 1`.
+
+`=` writes. `==` asks a yes/no question. Mixing them up is one of the first bugs everyone hits.
+
+You can unpack two names at once: `city, year = "Mumbai", 2026`.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              oldVal["riders is 12"] --> addOne["riders + 1"]
+              addOne --> newVal["riders is 13"]
+            """,
+            "Reassignment stores a new value under the same name",
+        )
+    )
+    b.code(
+        """riders = 12
+riders = riders + 1
+riders += 2
+print(riders)
+
+city, year = "Mumbai", 2026
+print(city, year)
+
+ready = True
+print("compare with ==", ready == True)
+print("a single = inside print would be a syntax error")"""
     )
     b.md(
         """## Indentation
@@ -413,11 +446,27 @@ assert greeting.startswith("Hi ")
 print("Practice 00.2 passed.")"""
     )
     b.md(hint("00.2", 'Glue pieces with `+`. Remember spaces inside the quoted bits: `"Hi "` not `"Hi"`.'))
+    b.md("## Practice 00.3")
+    b.md("Start `trips` at `10`. Add `3` with `+=`, then unpack `city, season = \"Pune\", \"monsoon\"`.")
+    b.code(
+        """# Practice 00.3
+trips = 10
+trips += 3
+city, season = "Pune", "monsoon"
+print(trips, city, season)
+
+# Check 00.3
+assert trips == 13
+assert city == "Pune" and season == "monsoon"
+print("Practice 00.3 passed.")"""
+    )
+    b.md(hint("00.3", "`trips += 3` is the same as `trips = trips + 3`. Unpack with a comma on both sides."))
     b.md(
         """## Common mistakes
 
 - Running cells out of order, then wondering why a name is missing (`NameError`).
 - Using `=` (assign) when you meant to compare later with `==`.
+- Writing `trips++` — Python uses `trips += 1`.
 - Forgetting quotes around text.
 - Editing a cell and not re-running it — the runtime still has the old value.
 """
@@ -425,7 +474,8 @@ print("Practice 00.2 passed.")"""
     b.md("## Recap")
     b.md(
         """- Colab runs Python in a runtime. Order matters.
-- Names refer to values. `print()` shows them.
+- Names refer to values. `print()` shows them. `+=` updates a number in place.
+- `=` assigns. `==` compares.
 - Indentation defines blocks.
 - Tracebacks start with the error type; read that before the rest.
 """
@@ -441,6 +491,10 @@ print("Practice 00.2 passed.")"""
                     "What should you read first in a traceback?",
                     "The error type, such as `NameError` or `IndentationError`.",
                 ),
+                (
+                    "What does trips += 3 do if trips is 10?",
+                    "It stores 13 back into `trips`. There is no `++` in Python.",
+                ),
             ]
         )
     )
@@ -450,6 +504,12 @@ print("Practice 00.2 passed.")"""
         solution_block(
             "00.2",
             'first = "Priya"\ncourse = "Python Crash Course"\ngreeting = "Hi " + first + ", welcome to " + course + "."',
+        )
+    )
+    b.md(
+        solution_block(
+            "00.3",
+            'trips = 10\ntrips += 3\ncity, season = "Pune", "monsoon"',
         )
     )
     b.md(nav(fn))
@@ -463,13 +523,14 @@ def build_01() -> list[dict]:
         header(
             fn,
             SEQUENCE[1][1],
-            45,
+            55,
             "Notebook 00",
             [
                 "Name the common value types: `int`, `float`, `bool`, `None`, `str`",
-                "Use arithmetic, comparison, and logical operators",
-                "Convert between types on purpose",
-                "Index, slice, and format strings",
+                "Use arithmetic (`%` remainder too), comparison, and logical operators",
+                "Convert between types on purpose, including after `strip()`",
+                "Index, slice, `split`/`join`/`replace`, and format strings",
+                "Test missing values with `is None`",
             ],
         )
     )
@@ -492,7 +553,7 @@ print(type(title))"""
 
 `type(x)` reports the type. Python will not add a number to text until you convert one of them.
 
-`/` always gives a `float` (`4 / 2` is `2.0`). `//` is integer division. `**` is power.
+`/` always gives a `float` (`4 / 2` is `2.0`). `//` is integer division. `%` is the remainder (`7 % 2` is `1`). `**` is power.
 
 """
         + mermaid(
@@ -514,9 +575,11 @@ label = "commute"
 
 print(type(trips), type(distance_km), type(active), type(note), type(label))
 print(trips * distance_km)
-print("division", 5 / 2, "floor", 5 // 2, "power", 2 ** 3)
+print("division", 5 / 2, "floor", 5 // 2, "remainder", 7 % 2, "power", 2 ** 3)
+print(round(12.56, 1), abs(-3))
 print(3 == 3, 3 != 4, 3 < 4)
-print(True and False, True or False, not False)"""
+print(True and False, True or False, not False)
+print("missing?", note is None)"""
     )
     b.md("## Predict: text plus a number")
     b.md("The next cell **catches** `TypeError`. What goes wrong if you add `\"3\"` and `1`?")
@@ -572,6 +635,8 @@ Indexing starts at `0`. Slices are `[start:stop]` and **exclude** `stop`. Negati
 
 An f-string puts values into text: `f"{name} logged {trips} trips."`
 
+CSV cells often arrive with extra spaces. `strip()` removes them. `replace()` swaps text. `join()` is the inverse of `split()`. Test missing values with `is None` (not `== None`).
+
 """
         + mermaid(
             """
@@ -593,12 +658,21 @@ print("Hyder" in city)
 print(len(city))
 
 name = "ana"
-print(f"{name.title()} logged {trips} trips.")"""
+print(f"{name.title()} logged {trips} trips.")
+
+messy = "  19.0  "
+print("stripped", repr(messy.strip()))
+print("comma to dot", "19,0".replace(",", "."))
+print("join", "-".join(["2026", "08", "27"]))
+print("Mumbai".startswith("Mum"), "Pune".endswith("e"))
+
+print("use is None, not == None:", note is None)"""
     )
     b.md(
         after_run(
             "`city[0:5]` is `Hyder` (indexes 0–4). "
-            "The f-string prints `Ana logged 7 trips.`"
+            "The f-string prints `Ana logged 7 trips.` "
+            "`strip()` drops the padding spaces so conversion can succeed later."
         )
     )
     b.md("## Practice 01.1")
@@ -642,16 +716,40 @@ assert years == 19 and isinstance(years, int)
 print("Practice 01.3 passed.")"""
     )
     b.md(hint("01.3", "`int(\"19.0\")` fails. Convert to `float` first, then to `int`."))
+    b.md("## Practice 01.4")
+    b.md(
+        "CSV cells are messy. From `raw = \"  19,0  \"`, produce the integer `19`. "
+        "Strip spaces, replace the comma with a dot, then convert."
+    )
+    b.code(
+        """# Practice 01.4
+raw = "  19,0  "
+years = int(float(raw.strip().replace(",", ".")))
+print(years)
+
+# Check 01.4
+assert years == 19 and isinstance(years, int)
+print("Practice 01.4 passed.")"""
+    )
+    b.md(
+        hint(
+            "01.4",
+            '`raw.strip()` then `.replace(",", ".")` then `int(float(...))`. '
+            "European CSVs often use a comma as the decimal mark.",
+        )
+    )
     b.md(
         """## Common mistakes
 
 - `+` on strings concatenates: `\"3\" + \"4\"` is `\"34\"`.
-- `/` always returns a `float` in Python 3: `4 / 2` is `2.0`. Use `//` for integer division.
+- `/` always returns a `float` in Python 3: `4 / 2` is `2.0`. Use `//` for integer division. `%` is remainder, not percent.
 - Slices never include the end index: `\"Python\"[0:3]` is `Pyt`.
+- `int(\" 19 \")` can work, but `float(\"19,0\")` fails until you `replace` the comma.
+- Prefer `value is None` over `value == None`.
 """
     )
     b.md("## Recap")
-    b.md("Types decide what operations are legal. Convert on purpose. Strings are sequences you can index, slice, and format with f-strings.")
+    b.md("Types decide what operations are legal. Convert on purpose. Strip and replace messy text before you convert. Strings are sequences you can index, slice, join, and format with f-strings.")
     b.md(
         understanding(
             [
@@ -663,6 +761,10 @@ print("Practice 01.3 passed.")"""
                     "What is \"Python\"[0:3]?",
                     "`Pyt` — the end index is excluded.",
                 ),
+                (
+                    "How do you test that a value is missing?",
+                    "`value is None`. Later, pandas will use `NaN` for the same idea in numeric columns.",
+                ),
             ]
         )
     )
@@ -670,6 +772,12 @@ print("Practice 01.3 passed.")"""
     b.md(solution_block("01.1", "celsius = 22\nfahrenheit = celsius * 9 / 5 + 32"))
     b.md(solution_block("01.2", 'full = "Ada Lovelace"\nfirst_name = full.split()[0]\nlast_name = full.split()[1]'))
     b.md(solution_block("01.3", 'raw = "19.0"\nyears = int(float(raw))'))
+    b.md(
+        solution_block(
+            "01.4",
+            'raw = "  19,0  "\nyears = int(float(raw.strip().replace(",", ".")))',
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -681,12 +789,13 @@ def build_02() -> list[dict]:
         header(
             fn,
             SEQUENCE[2][1],
-            50,
+            60,
             "Notebooks 00–01",
             [
                 "Create and update lists, tuples, dictionaries, and sets",
                 "Index and slice nested collections",
-                "Explain aliasing versus a real copy",
+                "Check dict keys with `in` and `.get()`, and walk `.items()`",
+                "Explain aliasing versus a real copy, and `sorted` versus `.sort()`",
                 "Store a row of data as a dictionary",
             ],
         )
@@ -705,6 +814,8 @@ print(sample[:3], len(sample))"""
 | tuple | `(1, 2)` | yes | no | yes | by index |
 | dict | `{"k": 1}` | yes (insertion) | yes | keys unique | by key |
 | set | `{1, 2}` | no | yes | no | by value |
+
+`in` on a dict checks **keys**, not values. `"Mumbai" in rider` is false even when the city is Mumbai. Use `.get(key, default)` when the key might be missing, and `.items()` to walk pairs. `pop()` removes and returns the last list item.
 
 Machine-learning tables are usually a **list of dictionaries** (one dict per row) until you later load them into pandas.
 
@@ -743,7 +854,13 @@ print(rider.get("pass_type", "unknown"))
 
 seen = {"Mumbai", "Pune", "Mumbai"}
 print(seen)
-print("Pune" in seen)"""
+print("Pune" in seen)
+
+print("city" in rider, "Mumbai" in rider)
+print(list(rider.keys()), list(rider.values()))
+print(list(rider.items()))
+last_city = cities.pop()
+print("popped", last_city, "left", cities)"""
     )
     b.md(
         """## Nested records
@@ -792,7 +909,22 @@ clone = original.copy()
 alias.append("c")
 print("original", original)
 print("clone   ", clone)
-print("same object?", alias is original, clone is original)"""
+print("same object?", alias is original, clone is original)
+
+km = [8.0, 3.0, 12.0]
+print("sorted builds a new list", sorted(km))
+print("original still", km)
+sort_result = km.sort()
+print(".sort() returns", sort_result, "and mutates", km)"""
+    )
+    b.md(
+        """## `sorted` versus `.sort()`
+
+`sorted(xs)` returns a **new** list and leaves `xs` alone. `xs.sort()` changes `xs` and returns `None`. `rows = rows.sort()` silently stores `None` and your table is gone.
+
+Notebook 06 uses `sorted(rows, key=...)` for the split. The `key=` function comes in notebook 04.
+
+"""
     )
     b.md("## Practice 02.1")
     b.md("Start from `['cricket', 'football']`. Append `'hockey'`, then replace `'football'` with `'tennis'`.")
@@ -838,16 +970,49 @@ assert km_for_two == 3.0
 print("Practice 02.3 passed.")"""
     )
     b.md(hint("02.3", "The second dictionary is index `1`. Then use `[\"km\"]`."))
+    b.md("## Practice 02.4")
+    b.md(
+        "From `row`, set `has_city` if the key `city` is present, and `pass_type` from `.get` with default `\"casual\"`."
+    )
+    b.code(
+        """# Practice 02.4
+row = {"id": 1, "city": "Pune"}
+has_city = "city" in row
+pass_type = row.get("pass_type", "casual")
+print(has_city, pass_type)
+
+# Check 02.4
+assert has_city is True
+assert pass_type == "casual"
+print("Practice 02.4 passed.")"""
+    )
+    b.md(hint("02.4", '`"city" in row` checks keys. `row.get("pass_type", "casual")` supplies a default when the key is missing.'))
+    b.md("## Practice 02.5")
+    b.md("Build a new sorted copy of `km` without changing `km` itself.")
+    b.code(
+        """# Practice 02.5
+km = [8.0, 3.0, 12.0]
+by_km = sorted(km)
+print(by_km, km)
+
+# Check 02.5
+assert by_km == [3.0, 8.0, 12.0]
+assert km == [8.0, 3.0, 12.0]
+print("Practice 02.5 passed.")"""
+    )
+    b.md(hint("02.5", "`sorted(km)` returns a new list. `km.sort()` would change `km` and return `None`."))
     b.md(
         """## Common mistakes
 
 - `dict[0]` fails unless `0` is actually a key. Use a list for positional access.
+- `"Mumbai" in rider` checks keys, not values. Use `rider.get("city") == "Mumbai"`.
 - Changing an alias changes the original list.
+- `rows = rows.sort()` stores `None`. Use `sorted(rows)`.
 - Tuples cannot be updated: `point[0] = 0` raises `TypeError`.
 """
     )
     b.md("## Recap")
-    b.md("Lists grow and change. Tuples freeze a sequence (good for a lat/lon pair). Dicts map names to values and are the usual shape of one data row.")
+    b.md("Lists grow and change (`append`, `pop`). Tuples freeze a sequence (good for a lat/lon pair). Dicts map names to values: `in` tests keys, `.get` supplies defaults, `.items()` walks pairs.")
     b.md(
         understanding(
             [
@@ -858,6 +1023,14 @@ print("Practice 02.3 passed.")"""
                 (
                     "What does b = a mean when a is a list?",
                     "Both names refer to the same list. Use `.copy()` for a separate list.",
+                ),
+                (
+                    'Does "Mumbai" in {"city": "Mumbai"} succeed?',
+                    "No. `in` on a dict checks keys. The key is `city`, not `Mumbai`.",
+                ),
+                (
+                    "What does trips.sort() return?",
+                    "`None`. It mutates the list. Use `sorted(trips)` when you still need the original order.",
                 ),
             ]
         )
@@ -881,6 +1054,18 @@ print("Practice 02.3 passed.")"""
             'km_for_two = rows[1]["km"]',
         )
     )
+    b.md(
+        solution_block(
+            "02.4",
+            'has_city = "city" in row\npass_type = row.get("pass_type", "casual")',
+        )
+    )
+    b.md(
+        solution_block(
+            "02.5",
+            "by_km = sorted(km)",
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -892,12 +1077,14 @@ def build_03() -> list[dict]:
         header(
             fn,
             SEQUENCE[3][1],
-            50,
+            60,
             "Notebooks 00–02",
             [
                 "Write `if` / `elif` / `else` branches and validate values",
                 "Loop with `for`, `while`, `range`, `enumerate`, and `zip`",
-                "Build totals with an accumulator",
+                "Build totals with an accumulator, including a dict of counts",
+                "Use `any` / `all` to check a list of flags",
+                "Tell missing blanks apart from a real `0`",
                 "Flatten a nested list with a nested loop",
             ],
         )
@@ -946,7 +1133,32 @@ print(city in valid_cities)
 
 if []:
     print("empty list would not print this")
-print("empty list is falsy")"""
+print("empty list is falsy")
+
+print("bool(0)", bool(0), "bool(0.0)", bool(0.0))
+print("bool('')", bool(""), "bool(' ')", bool(" "))
+zero = 0
+print("None is None", None is None, "zero is None", zero is None)"""
+    )
+    b.md(
+        """## Missing versus zero
+
+`if hours:` is true for any non-zero number, so it **drops a real 0-hour trip**. A blank CSV cell (`""` or `" "`) is missing; `0` is data. pandas `isna()` follows the same idea: `None` is missing, `0` is not.
+
+Write a helper instead of relying on truthiness:
+
+```python
+def is_missing(value):
+    if value is None:
+        return True
+    if isinstance(value, str) and value.strip() == "":
+        return True
+    return False
+```
+
+A **mask** is a list of booleans, one per row: `long = [h >= 5 for h in hours]`. pandas later wants `df[mask]`, not `if df["hours"] >= 5`.
+
+"""
     )
     b.md(
         """## Loops
@@ -957,6 +1169,9 @@ print("empty list is falsy")"""
 - `zip(a, b)` walks two sequences together.
 - `while` repeats until the condition becomes false. **Update the counter**, or it never ends.
 - `continue` skips the rest of this round. `break` leaves the loop.
+- `range(start, stop)` starts at `start`, not always `0`.
+- A dict accumulator counts or groups: `counts[key] = counts.get(key, 0) + 1`.
+- `any(flags)` is true if at least one flag is true. `all(flags)` needs every flag true.
 
 Nested loops are just loops inside loops, not a third kind of loop.
 
@@ -1016,6 +1231,42 @@ for km_value in [1.2, 8.0, 3.4, 12.1]:
     if km_value > 10:
         print("stopping after the first very long trip")
         break"""
+    )
+    b.md(
+        """## Counting with a dictionary
+
+A dict that counts is the usual way to tally cities, words, or labels. Later, pandas `value_counts()` is this loop:
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              cityName[city] --> lookup["counts.get city 0"]
+              lookup --> plusOne[add 1]
+              plusOne --> store[store back]
+            """,
+            "A dict accumulator stores a running count per key",
+        )
+    )
+    b.code(
+        """print(list(range(1, 4)))
+
+cities_seen = ["Mumbai", "Pune", "Mumbai", "Goa", "Pune", "Mumbai"]
+counts = {}
+for city in cities_seen:
+    counts[city] = counts.get(city, 0) + 1
+print(counts)
+for city, n in counts.items():
+    print(city, n)
+
+hours = [2.0, 1.5, 0.0]
+positive_flags = []
+long_flags = []
+for h in hours:
+    positive_flags.append(h > 0)
+    long_flags.append(h > 3)
+print("all positive?", all(positive_flags))
+print("any long hour?", any(long_flags))"""
     )
     b.md("## Practice 03.1")
     b.md("Classify `score` as `\"fail\"` (< 40), `\"pass\"` (40–74), or `\"distinction\"` (75+).")
@@ -1083,16 +1334,60 @@ assert flat == [1, 2, 3, 4]
 print("Practice 03.4 passed.")"""
     )
     b.md(hint("03.4", "Outer loop visits each inner list. Inner loop visits each number."))
+    b.md("## Practice 03.5")
+    b.md("Count how many times each city appears. Store the result in `counts`.")
+    b.code(
+        """# Practice 03.5
+cities_seen = ["Mumbai", "Pune", "Mumbai", "Goa", "Pune", "Mumbai"]
+counts = {}
+for city in cities_seen:
+    counts[city] = counts.get(city, 0) + 1
+print(counts)
+
+# Check 03.5
+assert counts == {"Mumbai": 3, "Pune": 2, "Goa": 1}
+print("Practice 03.5 passed.")"""
+    )
+    b.md(hint("03.5", "`counts[city] = counts.get(city, 0) + 1` inside the loop. Start from `{}`."))
+    b.md("## Practice 03.6")
+    b.md(
+        "Write `is_missing(value)` that is true for `None` and whitespace-only strings, and false for `0` and `0.0`."
+    )
+    b.code(
+        """# Practice 03.6
+def is_missing(value):
+    if value is None:
+        return True
+    if isinstance(value, str) and value.strip() == "":
+        return True
+    return False
+
+print([is_missing(v) for v in [None, "", " ", 0, 0.0, "Mumbai"]])
+
+# Check 03.6
+assert is_missing(None) and is_missing("") and is_missing("  ")
+assert not is_missing(0) and not is_missing(0.0)
+assert not is_missing("Mumbai")
+print("Practice 03.6 passed.")"""
+    )
+    b.md(
+        hint(
+            "03.6",
+            "Test `is None` first. Then, if the value is a `str`, `strip()` and compare to `\"\"`.",
+        )
+    )
     b.md(
         """## Common mistakes
 
 - Writing `if score > 40` and `if score > 75` as two separate `if`s when you needed `elif`.
 - Forgetting to update the `while` counter (`n += 1`), which never ends.
 - Using `range(len(xs))` when `for x in xs` would be clearer.
+- Writing `counts[city] += 1` before the key exists (`KeyError`). Use `.get(city, 0)` first.
+- Using `if hours:` and accidentally dropping a legitimate `0`.
 """
     )
     b.md("## Recap")
-    b.md("Branches choose a path. Loops repeat a path. Accumulators remember what you have seen so far.")
+    b.md("Branches choose a path. Loops repeat a path. Accumulators remember what you have seen so far — a number, a list, or a dict of counts.")
     b.md(
         understanding(
             [
@@ -1103,6 +1398,14 @@ print("Practice 03.4 passed.")"""
                 (
                     "What does enumerate(xs) yield each step?",
                     "A pair `(index, value)`, starting the index at 0.",
+                ),
+                (
+                    "How do you count trips per city without pandas?",
+                    "A dict: `counts[city] = counts.get(city, 0) + 1`. That is `value_counts` later.",
+                ),
+                (
+                    "Is 0 missing data?",
+                    "No. `0` is a real value. `None` and blank/whitespace strings are missing.",
                 ),
             ]
         )
@@ -1132,6 +1435,18 @@ print("Practice 03.4 passed.")"""
             "flat = []\nfor row in matrix:\n    for value in row:\n        flat.append(value)",
         )
     )
+    b.md(
+        solution_block(
+            "03.5",
+            "counts = {}\nfor city in cities_seen:\n    counts[city] = counts.get(city, 0) + 1",
+        )
+    )
+    b.md(
+        solution_block(
+            "03.6",
+            'def is_missing(value):\n    if value is None:\n        return True\n    if isinstance(value, str) and value.strip() == "":\n        return True\n    return False',
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -1143,12 +1458,13 @@ def build_04() -> list[dict]:
         header(
             fn,
             SEQUENCE[4][1],
-            50,
+            55,
             "Notebooks 00–03",
             [
                 "Define functions with parameters, defaults, and return values",
                 "Keep work in local scope and write a one-line docstring",
-                "Split a task into small pure functions",
+                "Read a short docstring with `help` or `.__doc__`",
+                "Return a new dict or list instead of mutating the caller's data",
                 "Rewrite a simple loop as a list comprehension",
             ],
         )
@@ -1164,6 +1480,8 @@ print(sum(values) / len(values))"""
 A function is a named block you can reuse. `return` sends a value back. If you omit `return`, the result is `None`.
 
 Names assigned inside a function are **local**. They do not overwrite names outside unless you go looking for trouble with `global` (skip that here).
+
+You can pass arguments **by name**, in any order: `label_trip(hours=2.0, city="Pune")`. scikit-learn calls look like this: `train_test_split(X, y, test_size=0.2, random_state=0)`.
 
 A **pure** function depends only on its arguments and does not change lists or dicts that were passed in.
 
@@ -1202,6 +1520,7 @@ def label_trip(city, hours=1.0):
 
 print(label_trip("Mumbai"))
 print(label_trip("Pune", hours=2.5))
+print(label_trip(hours=2.0, city="Pune"))
 
 def min_max(nums):
     return min(nums), max(nums)
@@ -1220,7 +1539,41 @@ def add_one(x):
     n = x + 1
     return n
 
-print("function result", add_one(3), "outer n still", n)"""
+print("function result", add_one(3), "outer n still", n)
+
+print(str.strip.__doc__.splitlines()[0])
+print("min takes an iterable:", min.__doc__.splitlines()[0])
+print("strip" in dir(str))"""
+    )
+    b.md(
+        """## Copy, don't mutate
+
+When a library method is unfamiliar, read its docstring: `print(str.strip.__doc__)` or `help(str.strip)`. `dir(str)` lists method names (`"strip" in dir(str)`). You will do this constantly in pandas and scikit-learn.
+
+If a function changes a list or dict it received, the caller sees the change. Prefer returning a **new** object: `updated = dict(row)` then change `updated`.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              original[caller's row] --> copyRow["dict row"]
+              copyRow --> extraKm[add km]
+              extraKm --> returned[returned dict]
+            """,
+            "Copy the row, change the copy, return the copy",
+        )
+    )
+    b.code(
+        """def add_km(row, extra):
+    \"\"\"Return a new row with extra kilometres. Leave the original alone.\"\"\"
+    updated = dict(row)
+    updated["km"] = row["km"] + extra
+    return updated
+
+original_row = {"city": "Mumbai", "km": 8.0}
+extended = add_km(original_row, 1.5)
+print("original", original_row)
+print("returned", extended)"""
     )
     b.md(
         """## Comprehensions
@@ -1300,6 +1653,27 @@ assert cities == ["Mumbai", "Pune"]
 print("Practice 04.3 passed.")"""
     )
     b.md(hint("04.3", '`[row["city"].title() for row in rows]`'))
+    b.md("## Practice 04.4")
+    b.md("Write `add_km(row, extra)` so it returns a new dict and leaves `original_row` unchanged.")
+    b.code(
+        """# Practice 04.4
+def add_km(row, extra):
+    \"\"\"Return a new row with extra kilometres.\"\"\"
+    updated = dict(row)
+    updated["km"] = row["km"] + extra
+    return updated
+
+original_row = {"city": "Pune", "km": 3.0}
+extended = add_km(original_row, 2.0)
+print(original_row, extended)
+
+# Check 04.4
+assert original_row == {"city": "Pune", "km": 3.0}
+assert extended == {"city": "Pune", "km": 5.0}
+assert extended is not original_row
+print("Practice 04.4 passed.")"""
+    )
+    b.md(hint("04.4", "`updated = dict(row)` copies the mapping. Change `updated`, not `row`."))
     b.md(
         """## Common mistakes
 
@@ -1309,7 +1683,7 @@ print("Practice 04.3 passed.")"""
 """
     )
     b.md("## Recap")
-    b.md("Functions name an idea, isolate scope, and return results. Comprehensions are loops that build a collection in one expression.")
+    b.md("Functions name an idea, isolate scope, and return results. Copy inputs before you change them. Comprehensions are loops that build a collection in one expression.")
     b.md(
         understanding(
             [
@@ -1320,6 +1694,10 @@ print("Practice 04.3 passed.")"""
                 (
                     "Does a list comprehension change the original list?",
                     "No. It builds a **new** list.",
+                ),
+                (
+                    "How do you look up what min() does?",
+                    "`print(min.__doc__)` or `help(min)`. Same habit for pandas methods later.",
                 ),
             ]
         )
@@ -1333,6 +1711,12 @@ print("Practice 04.3 passed.")"""
         )
     )
     b.md(solution_block("04.3", 'cities = [row["city"].title() for row in rows]'))
+    b.md(
+        solution_block(
+            "04.4",
+            'def add_km(row, extra):\n    updated = dict(row)\n    updated["km"] = row["km"] + extra\n    return updated',
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -1344,12 +1728,14 @@ def build_05() -> list[dict]:
         header(
             fn,
             SEQUENCE[5][1],
-            50,
+            60,
             "Notebooks 00–04",
             [
                 "Tell syntax, runtime, and logic errors apart",
                 "Catch a specific exception and raise a clear one",
-                "Import from the standard library",
+                "Import from the standard library, including `datetime` and `statistics`",
+                "Parse a date string into year, month, day, and hour",
+                "Compare floats with `math.isclose` and detect `NaN` with `math.isnan`",
                 "Read and write JSON and CSV with `pathlib`",
             ],
         )
@@ -1435,6 +1821,10 @@ assert require_positive(2) == 2"""
 
 Always open files with a `with` block so they close even if something fails. Prefer `pathlib.Path` over raw `"/tmp/file.csv"` strings.
 
+`datetime.strptime` and `datetime.fromisoformat` turn a date string into a date. pandas later calls this `to_datetime`. Derive `.hour` and `.weekday()` (Monday is 0) as features. `statistics.mean` is the stdlib version of a column average.
+
+`0.1 + 0.2 == 0.3` is false because of binary floats — use `math.isclose`. `float("nan")` is not equal to itself; pandas missing numbers look like this. Use `math.isnan`, never `==`.
+
 """
         + mermaid(
             """
@@ -1452,9 +1842,19 @@ Always open files with a `with` block so they close even if something fails. Pre
         """import csv
 import json
 import math
+import statistics
+from datetime import datetime
 from pathlib import Path
 
 print(round(math.pi, 4))
+print("mean km", statistics.mean([8.5, 3.0, 12.0]))
+stamp = datetime.strptime("2026-08-27", "%Y-%m-%d")
+print("parsed date", stamp.year, stamp.month, stamp.day, stamp.weekday())
+started = datetime.fromisoformat("2026-08-27T08:15:00")
+print("hour", started.hour, "weekday", started.weekday())
+print("0.1 + 0.2 == 0.3?", 0.1 + 0.2 == 0.3, "isclose", math.isclose(0.1 + 0.2, 0.3))
+nan = float("nan")
+print("nan == nan?", nan == nan, "isnan", math.isnan(nan))
 
 DATA_DIR = Path.cwd() / "_course_data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -1526,16 +1926,51 @@ assert parsed == [{"id": 1, "city": "Mumbai"}, {"id": 2, "city": "Pune"}]
 print("Practice 05.3 passed.")"""
     )
     b.md(hint("05.3", "`csv.DictReader` yields rows. Convert `row[\"id\"]` with `int`."))
+    b.md("## Practice 05.4")
+    b.md('Parse `"2026-01-15"` as `YYYY-MM-DD` and store the month number in `month_number`.')
+    b.code(
+        """# Practice 05.4
+from datetime import datetime
+
+parsed = datetime.strptime("2026-01-15", "%Y-%m-%d")
+month_number = parsed.month
+print(parsed, month_number)
+
+# Check 05.4
+assert month_number == 1
+assert parsed.year == 2026 and parsed.day == 15
+print("Practice 05.4 passed.")"""
+    )
+    b.md(hint("05.4", '`datetime.strptime(text, "%Y-%m-%d")`. The month is `.month` (January is 1).'))
+    b.md("## Practice 05.5")
+    b.md("From `[1.0, float(\"nan\"), 3.0]`, drop NaNs and store the mean of the rest in `mean_clean`.")
+    b.code(
+        """# Practice 05.5
+import math
+
+values = [1.0, float("nan"), 3.0]
+clean = [value for value in values if not math.isnan(value)]
+mean_clean = sum(clean) / len(clean)
+print(clean, mean_clean)
+
+# Check 05.5
+assert clean == [1.0, 3.0]
+assert abs(mean_clean - 2.0) < 1e-9
+print("Practice 05.5 passed.")"""
+    )
+    b.md(hint("05.5", "`math.isnan(value)` is the test. `value == float(\"nan\")` is always false."))
     b.md(
         """## Common mistakes
 
 - Catching every exception and continuing silently.
 - Opening a file and never closing it (use `with`).
 - Assuming Colab files survive a runtime restart. They often do not.
+- Using `datetime.strptime` with the wrong format codes (`%m` is month, `%M` is minutes).
+- Testing missing floats with `== float("nan")`. Use `math.isnan`.
 """
     )
     b.md("## Recap")
-    b.md("Name the error, catch only what you expect, and keep data in files you control. JSON and CSV are the usual hand-off formats before pandas.")
+    b.md("Name the error, catch only what you expect, and keep data in files you control. JSON, CSV, and ISO dates are the usual hand-off formats before pandas.")
     b.md(
         understanding(
             [
@@ -1546,6 +1981,14 @@ print("Practice 05.3 passed.")"""
                 (
                     "Why open files with a with block?",
                     "The file is closed even if the cell fails halfway through.",
+                ),
+                (
+                    "What is datetime.strptime(\"2026-08-27\", \"%Y-%m-%d\").month?",
+                    "`8`. pandas `to_datetime` is the same idea on a whole column.",
+                ),
+                (
+                    "Why is float(\"nan\") == float(\"nan\") false?",
+                    "NaN is not equal to itself. Use `math.isnan`. pandas `isna()` is the column version.",
                 ),
             ]
         )
@@ -1569,6 +2012,18 @@ print("Practice 05.3 passed.")"""
             'parsed = []\nfor row in csv.DictReader(io.StringIO(csv_text)):\n    parsed.append({"id": int(row["id"]), "city": row["city"]})',
         )
     )
+    b.md(
+        solution_block(
+            "05.4",
+            'parsed = datetime.strptime("2026-01-15", "%Y-%m-%d")\nmonth_number = parsed.month',
+        )
+    )
+    b.md(
+        solution_block(
+            "05.5",
+            "clean = [value for value in values if not math.isnan(value)]\nmean_clean = sum(clean) / len(clean)",
+        )
+    )
     b.md(nav(fn))
     return b.cells
 
@@ -1580,13 +2035,16 @@ def build_06() -> list[dict]:
         header(
             fn,
             SEQUENCE[6][1],
-            55,
+            65,
             "Notebooks 00–05",
             [
                 "Clean a list of dictionaries: types, missing values, duplicates",
                 "Filter, sort, group, and aggregate without pandas",
+                "Encode a categorical column as integer codes or one-hot bits",
+                "Reshape a table as dict-of-lists (pandas) and list-of-lists X (sklearn)",
                 "Separate features from a target column",
                 "Make a deterministic train/validation split and scale with train-only statistics",
+                "Explain why a seeded shuffle exists (`random_state` later)",
             ],
         )
     )
@@ -1786,6 +2244,78 @@ print("km max on all rows", leaky_max)
 print("km max on train only", train_max)
 print("leaking would shrink train values because the 18 km row sits in validation")"""
     )
+    b.md(
+        """## Categories and reproducibility
+
+Models need numbers. A city name becomes an integer **code**. Sort the unique cities so the mapping does not depend on row order. Fit the mapping on **train** in real work (same rule as scaling). Here the table is tiny, so we show the idea on all cleaned rows.
+
+scikit-learn's `train_test_split(..., random_state=42)` is a **seeded shuffle**. This course sorts by `id` instead, so CI stays stable. If you shuffle, copy the list first and seed the generator.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              cities[unique cities] --> sortedC[sort]
+              sortedC --> codes["Mumbai 0, Pune 1"]
+            """,
+            "Sorted unique labels become integer codes",
+        )
+    )
+    b.code(
+        """city_levels = sorted({row["city"] for row in trips})
+city_code = {city: index for index, city in enumerate(city_levels)}
+encoded = []
+for row in trips:
+    item = dict(row)
+    item["city_code"] = city_code[row["city"]]
+    encoded.append(item)
+print("city_code", city_code)
+print([row["city_code"] for row in encoded])
+
+import random
+
+ids = [row["id"] for row in trips]
+shuffled = ids[:]
+random.Random(0).shuffle(shuffled)
+print("seeded shuffle", shuffled)
+print("id split stays", [row["id"] for row in train], [row["id"] for row in valid])"""
+    )
+    b.md(
+        """## Three shapes of the same table
+
+The same trips appear three ways. pandas `DataFrame(by_column)` wants a **dict of lists** (one list per column). sklearn `model.fit(X, y)` wants `X` as a **list of lists of numbers**. A **list of dicts** is the shape you cleaned.
+
+A city can also become **one-hot** bits: Mumbai → `[1, 0]`, Pune → `[0, 1]`. An unseen city (Goa) becomes `[0, 0]` — sklearn `handle_unknown="ignore"`. Fit the level list on **train** only.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              rows[list of dicts] --> cols["dict of lists"]
+              rows --> matrix["list of lists X"]
+            """,
+            "One table, three shapes: rows, columns, numeric matrix",
+        )
+    )
+    b.code(
+        """by_column = {
+    "hours": [row["hours"] for row in trips],
+    "km": [row["km"] for row in trips],
+}
+X_numeric = [[row["hours"], row["km"]] for row in trips]
+y_target = [row["returned"] for row in trips]
+print("column hours", by_column["hours"])
+print("X rows", len(X_numeric), "y rows", len(y_target))
+
+train_levels = sorted({row["city"] for row in train})
+
+def one_hot(city, levels):
+    return [int(city == level) for level in levels]
+
+print("levels", train_levels)
+print("Mumbai", one_hot("Mumbai", train_levels))
+print("unseen Goa", one_hot("Goa", train_levels))"""
+    )
     b.md("## Practice 06.1")
     b.md("Return only rows whose `hours` is at least 2.")
     b.code(
@@ -1830,16 +2360,67 @@ assert y == [True, False, True, False]
 print("Practice 06.3 passed.")"""
     )
     b.md(hint("06.3", "Two comprehensions: one nested list for features, one list for the boolean target."))
+    b.md("## Practice 06.4")
+    b.md("Map each city in `trips` to an integer code using sorted unique names. Store the mapping in `city_code`.")
+    b.code(
+        """# Practice 06.4
+city_levels = sorted({row["city"] for row in trips})
+city_code = {city: index for index, city in enumerate(city_levels)}
+print(city_code)
+
+# Check 06.4
+assert city_code["Mumbai"] == 0
+assert city_code["Pune"] == 1
+assert set(city_code) == {"Mumbai", "Pune"}
+print("Practice 06.4 passed.")"""
+    )
+    b.md(
+        hint(
+            "06.4",
+            'Unique cities via `{row["city"] for row in trips}`, then `sorted`, then `enumerate`.',
+        )
+    )
+    b.md("## Practice 06.5")
+    b.md(
+        "Build `by_column` as a dict of `hours` and `km` lists from `trips`. "
+        "Then one-hot the unseen city `\"Goa\"` against `train_levels = [\"Mumbai\", \"Pune\"]`."
+    )
+    b.code(
+        """# Practice 06.5
+by_column = {
+    "hours": [row["hours"] for row in trips],
+    "km": [row["km"] for row in trips],
+}
+train_levels = ["Mumbai", "Pune"]
+goa_one_hot = [int("Goa" == level) for level in train_levels]
+print(by_column)
+print(goa_one_hot)
+
+# Check 06.5
+assert by_column["hours"][0] == 2.0
+assert len(by_column["hours"]) == len(trips) == len(by_column["km"])
+assert goa_one_hot == [0, 0]
+print("Practice 06.5 passed.")"""
+    )
+    b.md(
+        hint(
+            "06.5",
+            'Two comprehensions fill the dict. `[int("Goa" == level) for level in train_levels]` is all zeros.',
+        )
+    )
     b.md(
         """## Common mistakes
 
 - Scaling the full dataset, then splitting. Fit on train only.
 - Leaving the target inside `X`.
-- Using `set` iteration order when you need a stable split.
+- Using `set` iteration order when you need a stable split or stable category codes — sort first.
+- Shuffling in place without a copy (`random.shuffle(ids)` mutates `ids`).
+- Passing a list of dicts to `model.fit`. sklearn wants a numeric `X`.
+- Fitting category codes on train+valid, then wondering why validation cities leaked into the map.
 """
     )
     b.md("## Recap")
-    b.md("Cleaning, splitting, and scaling are Python problems first. Libraries automate the same steps; they do not replace them.")
+    b.md("Cleaning, splitting, scaling, and encoding are Python problems first. Libraries automate the same steps; they do not replace them.")
     b.md(
         understanding(
             [
@@ -1850,6 +2431,14 @@ print("Practice 06.3 passed.")"""
                 (
                     "Where does the target column belong?",
                     "Out of X, stored separately as y. If it stays in X, a model can cheat.",
+                ),
+                (
+                    "Why sort city names before assigning codes?",
+                    "So the mapping is stable. Unordered set iteration can shuffle codes if row order changes.",
+                ),
+                (
+                    "What shape does sklearn model.fit(X, y) expect for X?",
+                    "A list of lists of numbers (rows = samples). A dict of lists is the pandas constructor shape.",
                 ),
             ]
         )
@@ -1866,6 +2455,18 @@ print("Practice 06.3 passed.")"""
         solution_block(
             "06.3",
             'X = [[row["hours"], row["km"]] for row in trips]\ny = [row["returned"] for row in trips]',
+        )
+    )
+    b.md(
+        solution_block(
+            "06.4",
+            'city_levels = sorted({row["city"] for row in trips})\ncity_code = {city: index for index, city in enumerate(city_levels)}',
+        )
+    )
+    b.md(
+        solution_block(
+            "06.5",
+            'by_column = {\n    "hours": [row["hours"] for row in trips],\n    "km": [row["km"] for row in trips],\n}\ngoa_one_hot = [int("Goa" == level) for level in train_levels]',
         )
     )
     b.md(nav(fn))
@@ -2159,9 +2760,10 @@ print("Practice 07.3 passed.")"""
     b.md(
         """## You are ready for ML libraries when
 
-- You can load rows, clean them, and say what each column means.
-- You can keep the target out of the feature matrix.
-- You can split first and compute statistics on train only.
+- You can load rows, clean them (`strip`, convert, drop missing), and say what each column means.
+- You can encode a category as a number and keep the target out of the feature matrix.
+- You can split first and compute statistics on train only (or seed a shuffle).
+- You can parse a date and read a docstring with `help` / `.__doc__`.
 - You can check those promises with `assert`.
 
 **Next:** NumPy arrays, pandas DataFrames, a plotting library, then scikit-learn's `Pipeline` and `train_test_split`. The verbs stay the same."""
