@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Python Crash Course · Progress</title>
+    <meta
+      name="description"
+      content="Self-tracked progress dashboard for the Python Crash Course. Lessons run in Google Colab."
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <p class="kicker" id="repoLabel">course dashboard</p>
+        <h1 id="courseTitle">Python Crash Course</h1>
+        <p class="lede" id="courseSubtitle">Beginner Python, ready for machine learning libraries.</p>
+        <div class="progress-row" aria-live="polite">
+          <div class="bar" aria-hidden="true"><span id="barFill"></span></div>
+          <span class="percent" id="percent">0%</span>
+        </div>
+        <p class="footnote">
+          Progress is stored in this browser only. It is never uploaded to GitHub.
+          Code practice stays in Colab; the exit checks below are a self-review, not a verified grade.
+        </p>
+      </header>
+
+      <section class="banner" id="nextLesson">
+        <p class="kicker">Next lesson</p>
+        <h2 id="nextTitle">Loading…</h2>
+        <a class="next-link" id="nextLink" href="#lessons">Jump to lesson</a>
+      </section>
+
+      <div class="layout">
+        <aside class="panel">
+          <h2>This fork</h2>
+          <p class="small">
+            Colab and GitHub links follow the repository that deployed this page, so a fork opens
+            your copy of the notebooks.
+          </p>
+          <p class="links">
+            <a id="githubRepo" href="https://github.com/ialimustufa/python-crash-course">Repository</a>
+            <a id="qualityRuns" href="https://github.com/ialimustufa/python-crash-course/actions/workflows/course-quality.yml">Course quality workflow</a>
+          </p>
+          <h3>How tracking works</h3>
+          <ul class="small">
+            <li>Tick milestones after you finish the Colab work.</li>
+            <li>Answer two exit questions per lesson.</li>
+            <li>Export JSON if you switch browsers.</li>
+          </ul>
+        </aside>
+        <section id="lessons" aria-live="polite"></section>
+      </div>
+
+      <section class="actions">
+        <button class="primary" id="exportBtn" type="button">Export progress</button>
+        <label class="file-btn">
+          Import progress
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </label>
+        <button id="resetBtn" type="button">Reset this browser</button>
+      </section>
+    </main>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+_course_data/
+.python-version

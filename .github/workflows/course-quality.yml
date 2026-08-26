@@ -1,0 +1,70 @@
+name: Course quality
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "notebooks/**"
+      - "site/**"
+      - "scripts/**"
+      - "README.md"
+      - "requirements-dev.txt"
+      - ".github/workflows/course-quality.yml"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: course-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install validators
+        run: python -m pip install -r requirements-dev.txt
+      - name: Check course structure
+        run: python scripts/validate_course.py --structure
+
+  notebooks:
+    needs: structure
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook:
+          - notebooks/00_Colab_and_First_Program.ipynb
+          - notebooks/01_Values_Strings_and_Conversion.ipynb
+          - notebooks/02_Collections_Indexing_and_Slicing.ipynb
+          - notebooks/03_Conditionals_and_Loops.ipynb
+          - notebooks/04_Functions_Scope_and_Comprehensions.ipynb
+          - notebooks/05_Errors_Modules_and_Files.ipynb
+          - notebooks/06_Python_Data_Workflows_for_ML.ipynb
+          - notebooks/07_Fundamentals_Capstone.ipynb
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install kernel
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m ipykernel install --user --name python3
+      - name: Execute notebook
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONHASHSEED: "0"
+        run: python scripts/validate_course.py --execute "${{ matrix.notebook }}" --artifact-dir artifacts
+      - name: Upload failed notebook
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-${{ replace(matrix.notebook, '/', '-') }}
+          path: artifacts
+          if-no-files-found: ignore

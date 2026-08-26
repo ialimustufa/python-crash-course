@@ -1,0 +1,296 @@
+{
+  "title": "Python Crash Course",
+  "subtitle": "Beginner Python, ready for machine learning libraries",
+  "repo": "ialimustufa/python-crash-course",
+  "branch": "master",
+  "lessons": [
+    {
+      "id": "00",
+      "title": "Colab and your first program",
+      "file": "notebooks/00_Colab_and_First_Program.ipynb",
+      "minutes": 35,
+      "objectives": [
+        "Open Colab, save a copy, and run cells in order",
+        "Use comments, print, and variables",
+        "Read a short traceback"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "Variables in a notebook belong to which of these?",
+          "choices": [
+            "The markdown cell they were mentioned in",
+            "The runtime, in the order you actually ran cells",
+            "GitHub, as soon as you fork the repo"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "What should you read first in a traceback?",
+          "choices": [
+            "The error type, such as IndentationError",
+            "Only the last number in the file path",
+            "The GitHub star count"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "01",
+      "title": "Values, strings, and conversion",
+      "file": "notebooks/01_Values_Strings_and_Conversion.ipynb",
+      "minutes": 45,
+      "objectives": [
+        "Name int, float, bool, None, and str",
+        "Convert types on purpose",
+        "Index, slice, and format strings"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What does int(\"19.0\") do in Python 3?",
+          "choices": [
+            "Returns 19",
+            "Returns 19.0",
+            "Raises ValueError; convert to float first"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "q2",
+          "question": "\"Python\"[0:3] is which of these?",
+          "choices": ["Pyt", "Pyth", "Python"],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "title": "Collections, indexing, and slicing",
+      "file": "notebooks/02_Collections_Indexing_and_Slicing.ipynb",
+      "minutes": 50,
+      "objectives": [
+        "Use lists, tuples, dicts, and sets",
+        "Store a data row as a dictionary",
+        "Explain aliasing versus a copy"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "Which collection maps a column name to a value for one row?",
+          "choices": ["A tuple of numbers", "A dictionary", "A set of cities"],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "b = a for a list named a means which of these?",
+          "choices": [
+            "b is an independent copy",
+            "b and a are two names for the same list",
+            "Python freezes both lists"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "title": "Conditionals and loops",
+      "file": "notebooks/03_Conditionals_and_Loops.ipynb",
+      "minutes": 50,
+      "objectives": [
+        "Write if/elif/else branches",
+        "Loop with for, range, enumerate, and zip",
+        "Build a total with an accumulator"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What is a nested loop?",
+          "choices": [
+            "A third kind of loop besides for and while",
+            "A loop that runs inside another loop",
+            "A loop that cannot use zip"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "enumerate(xs) yields which of these on each step?",
+          "choices": [
+            "Only the value",
+            "(index, value)",
+            "Only the length"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "title": "Functions, scope, and comprehensions",
+      "file": "notebooks/04_Functions_Scope_and_Comprehensions.ipynb",
+      "minutes": 50,
+      "objectives": [
+        "Define functions with arguments and return values",
+        "Keep names in local scope",
+        "Rewrite a simple loop as a comprehension"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "If a function has no return statement, what does it return?",
+          "choices": ["0", "None", "The last printed line"],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "A list comprehension always creates which of these?",
+          "choices": [
+            "A new list",
+            "An in-place update of the old list",
+            "A CSV file"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "title": "Errors, modules, and files",
+      "file": "notebooks/05_Errors_Modules_and_Files.ipynb",
+      "minutes": 50,
+      "objectives": [
+        "Catch a specific exception",
+        "Import from the standard library",
+        "Read and write JSON and CSV"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "int(\"bike\") is which kind of problem?",
+          "choices": ["A syntax error", "A runtime ValueError", "A Git conflict"],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "Why open files with a with block?",
+          "choices": [
+            "It makes CSV faster",
+            "The file is closed even if the cell fails",
+            "Colab requires it for print()"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "title": "Python data workflows for ML",
+      "file": "notebooks/06_Python_Data_Workflows_for_ML.ipynb",
+      "minutes": 55,
+      "objectives": [
+        "Clean a list of dictionaries",
+        "Separate features from a target",
+        "Split first, then scale with train-only statistics"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Rewrote the practice cells myself" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "When should you compute min/max for scaling?",
+          "choices": [
+            "On the full dataset, then split",
+            "On the training rows only, then apply to validation",
+            "On the target column"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "The target column should be which of these?",
+          "choices": [
+            "Included as an extra feature so the model can copy it",
+            "Kept out of X and stored separately as y",
+            "Deleted so nothing remains to predict"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "title": "Fundamentals capstone",
+      "file": "notebooks/07_Fundamentals_Capstone.ipynb",
+      "minutes": 60,
+      "objectives": [
+        "Prepare a dirty bike-share CSV in pure Python",
+        "Report data quality",
+        "Export a checked train/validation bundle"
+      ],
+      "milestones": [
+        { "id": "opened", "label": "Opened the notebook in Colab" },
+        { "id": "ran_all", "label": "Ran all cells from the top" },
+        { "id": "practices", "label": "Completed the three capstone checks" }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "This capstone asks you to train which model?",
+          "choices": [
+            "A scikit-learn classifier",
+            "None. Stop after a clean, split, scaled table",
+            "A neural network in TensorFlow"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "q2",
+          "question": "A later pandas dropna + train_test_split is closest to which step here?",
+          "choices": [
+            "Printing Hello, Colab",
+            "Cleaning rows, then splitting before scaling",
+            "Writing a lambda sort key"
+          ],
+          "answer": 1
+        }
+      ]
+    }
+  ]
+}
