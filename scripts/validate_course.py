@@ -133,6 +133,7 @@ def execute_notebook(path: Path, output: Path | None = None) -> None:
     import nbformat
     from nbclient import NotebookClient
 
+    path = path.resolve()
     nb = nbformat.read(path, as_version=4)
     client = NotebookClient(
         nb,
@@ -145,6 +146,7 @@ def execute_notebook(path: Path, output: Path | None = None) -> None:
         client.execute()
     except Exception:
         if output:
+            output = output.resolve()
             output.parent.mkdir(parents=True, exist_ok=True)
             nbformat.write(nb, output)
         raise
