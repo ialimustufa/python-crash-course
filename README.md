@@ -14,6 +14,25 @@ Beginner Python for people who want to be ready for machine learning libraries n
 - You can use a browser. You do not need Python installed locally.
 - You want a stepped path: Colab → values → collections → control flow → functions → files → data preparation.
 - After the capstone you should be ready to open a NumPy or pandas tutorial without fighting basic Python.
+- This course teaches the Python that pandas and scikit-learn **assume you already know**: tidy rows, missing vs `0`, `strip`, dates, numeric `X`, train-only stats.
+
+## Skills pandas and sklearn assume first
+
+Those libraries will not teach this. Each skill below is practiced in pure Python, then named in the library you will meet next.
+
+| You learn here | Notebook | You will type later |
+|---|---|---|
+| `strip` / `replace` / `join` | 01 | `s.str.strip()`, `s.str.replace()` |
+| `is None`, not `== None` | 01 | `isna()` — and never `df == np.nan` |
+| dict `in`, `.get`, `.items()` | 02 | column lookup; `df.items()` |
+| `sorted(xs)` vs `xs.sort()` | 02 | `df.sort_values()` returns a new frame |
+| dict counts, `any` / `all`, missing vs `0` | 03 | `value_counts()`, `isna().any()`, `df[mask]` |
+| `help` / `.__doc__`, copy don't mutate | 04 | `help(pd.read_csv)`, Copy-on-Write |
+| JSON/CSV, `datetime`, `NaN` / `isclose` | 05 | `read_csv`, `to_datetime`, `isna()` |
+| Split first, train-only scale, codes, `X` as numbers | 06 | `train_test_split`, `MinMaxScaler`, `OneHotEncoder` |
+| Dirty CSV → checked train/valid bundle | 07 | A pandas `Pipeline` does the same verbs |
+
+Skip for now: NumPy, pandas, scikit-learn, regex, class inheritance, `input()`.
 
 ## How to take the course
 
@@ -133,11 +152,11 @@ flowchart TB
 After this course:
 
 - NumPy arrays
-- pandas DataFrames
+- pandas DataFrames (`dropna`, `to_datetime`, boolean masks)
 - a plotting library (Matplotlib or Seaborn)
-- scikit-learn `Pipeline` and `train_test_split`
+- scikit-learn `Pipeline`, `train_test_split`, and `random_state`
 
-The verbs stay the same: clean, split, scale, check.
+The verbs stay the same: clean, split, scale, encode, check.
 
 ## How this repository is organized
 

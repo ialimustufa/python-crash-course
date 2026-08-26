@@ -1,6 +1,6 @@
 {
   "title": "Python Crash Course",
-  "subtitle": "Beginner Python, ready for machine learning libraries",
+  "subtitle": "Python skills that pandas and sklearn assume first",
   "repo": "ialimustufa/python-crash-course",
   "branch": "master",
   "lessons": [

@@ -815,7 +815,7 @@ print(sample[:3], len(sample))"""
 | dict | `{"k": 1}` | yes (insertion) | yes | keys unique | by key |
 | set | `{1, 2}` | no | yes | no | by value |
 
-`in` on a dict checks **keys**, not values. `"Mumbai" in rider` is false even when the city is Mumbai. Use `.get(key, default)` when the key might be missing, and `.items()` to walk pairs. `pop()` removes and returns the last list item.
+`in` on a dict checks **keys**, not values. `"Mumbai" in rider` is false even when the city is Mumbai. Use `.get(key, default)` when the key might be missing, and `.items()` to walk pairs. `dict(zip(keys, values))` builds a row from two lists. `pop()` removes and returns the last list item.
 
 Machine-learning tables are usually a **list of dictionaries** (one dict per row) until you later load them into pandas.
 
@@ -859,6 +859,7 @@ print("Pune" in seen)
 print("city" in rider, "Mumbai" in rider)
 print(list(rider.keys()), list(rider.values()))
 print(list(rider.items()))
+print(dict(zip(["id", "city", "km"], [1, "Pune", 3.0])))
 last_city = cities.pop()
 print("popped", last_city, "left", cities)"""
     )
@@ -1156,7 +1157,7 @@ def is_missing(value):
     return False
 ```
 
-A **mask** is a list of booleans, one per row: `long = [h >= 5 for h in hours]`. pandas later wants `df[mask]`, not `if df["hours"] >= 5`.
+A **mask** is a list of booleans, one per row: `long = [h >= 5 for h in hours]`. Keep rows with `zip`: `[row for row, keep in zip(rows, mask) if keep]`. pandas later wants `df[mask]`, not `if df["hours"] >= 5` (that error names `any`/`all`).
 
 """
     )
@@ -1266,7 +1267,9 @@ for h in hours:
     positive_flags.append(h > 0)
     long_flags.append(h > 3)
 print("all positive?", all(positive_flags))
-print("any long hour?", any(long_flags))"""
+print("any long hour?", any(long_flags))
+kept_hours = [h for h, keep in zip(hours, long_flags) if keep]
+print("pandas will want df[mask], not if df['hours'] > 3; kept", kept_hours)"""
     )
     b.md("## Practice 03.1")
     b.md("Classify `score` as `\"fail\"` (< 40), `\"pass\"` (40–74), or `\"distinction\"` (75+).")
@@ -2058,6 +2061,8 @@ print(int(row["hours"]), float(row["km"]))"""
 
 NumPy, pandas, and scikit-learn all expect **tidy rows**: consistent keys, numeric types, no surprise blanks, and a target you did not accidentally leak into the features.
 
+They assume you already know: `strip` messy text, `None` vs `0` vs `NaN`, boolean masks, `sorted` not `.sort()`, keyword arguments, and that `X` is numbers. This notebook is those skills applied to a table.
+
 You will do that work in pure Python. The same ideas map onto `DataFrame.dropna`, `train_test_split`, and `MinMaxScaler` later.
 
 Libraries are objects with methods: `model.fit(X, y)`. A tiny class below shows attributes and methods without becoming an OOP course.
@@ -2088,13 +2093,14 @@ Libraries are objects with methods: `model.fit(X, y)`. A tiny class below shows 
         return [row[name] for row in self.rows]
 
 raw_rows = [
-    {"id": "1", "city": "Mumbai", "hours": "2", "km": "8.0", "returned": "yes"},
+    {"id": "1", "city": " Mumbai", "hours": "2", "km": "8.0", "returned": " yes"},
     {"id": "2", "city": "Pune", "hours": "", "km": "3.0", "returned": "yes"},
     {"id": "3", "city": "Mumbai", "hours": "1", "km": "4.0", "returned": "no"},
     {"id": "4", "city": "Goa", "hours": "abc", "km": "5.0", "returned": "yes"},
     {"id": "5", "city": "Pune", "hours": "3", "km": "9.0", "returned": "yes"},
     {"id": "5", "city": "Pune", "hours": "3", "km": "9.0", "returned": "yes"},
     {"id": "6", "city": "Mumbai", "hours": "2", "km": "18.0", "returned": "no"},
+    {"id": "7", "city": "Pune", "hours": "nan", "km": "4.0", "returned": "yes"},
 ]
 print("raw rows", Table(raw_rows).n_rows)"""
     )
@@ -2116,11 +2122,18 @@ print("raw rows", Table(raw_rows).n_rows)"""
         )
     )
     b.code(
-        """def parse_float(text):
+        """import math
+
+def parse_float(text):
+    if isinstance(text, str):
+        text = text.strip()
     try:
-        return float(text)
+        value = float(text)
     except (TypeError, ValueError):
         return None
+    if math.isnan(value):
+        return None
+    return value
 
 
 def clean_rows(rows):
@@ -2134,24 +2147,29 @@ def clean_rows(rows):
         hours = parse_float(row["hours"])
         km = parse_float(row["km"])
         if hours is None or km is None:
-            if row["hours"] in (None, "") or row["km"] in (None, ""):
+            raw_hours = row["hours"].strip() if isinstance(row["hours"], str) else row["hours"]
+            raw_km = row["km"].strip() if isinstance(row["km"], str) else row["km"]
+            if raw_hours in (None, "") or raw_km in (None, ""):
                 report["dropped_missing"] += 1
             else:
                 report["dropped_invalid"] += 1
             continue
         seen_ids.add(row["id"])
+        city = row["city"].strip() if isinstance(row["city"], str) else row["city"]
+        returned_text = row["returned"].strip().lower() if isinstance(row["returned"], str) else row["returned"]
         cleaned.append(
             {
                 "id": int(row["id"]),
-                "city": row["city"],
+                "city": city,
                 "hours": hours,
                 "km": km,
-                "returned": row["returned"] == "yes",
+                "returned": returned_text == "yes",
                 "km_per_hour": km / hours,
             }
         )
     return cleaned, report
 
+print("NaN is missing, not a number:", parse_float("nan"))
 trips, quality = clean_rows(raw_rows)
 print(trips)
 print(quality)"""
@@ -2163,9 +2181,12 @@ by_km = sorted(trips, key=lambda row: row["km"], reverse=True)
 totals = {}
 for row in trips:
     totals[row["city"]] = totals.get(row["city"], 0) + row["km"]
+long_mask = [row["hours"] >= 2 for row in trips]
+masked_ids = [row["id"] for row, keep in zip(trips, long_mask) if keep]
 print("Mumbai rows", len(mumbai))
 print("farthest id", by_km[0]["id"])
-print("km by city", totals)"""
+print("km by city", totals)
+print("mask keeps ids", masked_ids)"""
     )
     b.md(
         """## Features, target, split, scale
@@ -2500,7 +2521,7 @@ You are given raw trip logs as CSV text (no download). Produce a training table 
 Suggested steps:
 
 1. Parse CSV to dictionaries.
-2. Validate and convert types.
+2. Strip text cells, then validate and convert types (`NaN` counts as missing).
 3. Remove duplicates, missing required values, and malformed numbers.
 4. Derive `km_per_hour` and `age_group`.
 5. Summarize quality.
@@ -2512,7 +2533,7 @@ What should happen to each raw row:
 
 | id | Problem | Fate |
 |---|---|---|
-| 1 | clean | keep |
+| 1 | padded `city` / `returned` | strip, then keep |
 | 2 | blank `hours` | drop missing |
 | 3 | clean | keep |
 | 4 | appears twice | keep first, drop duplicate |
@@ -2557,7 +2578,7 @@ import csv
 import io
 
 RAW_CSV = \"\"\"id,city,hours,km,rider_age,pass_type,returned
-1,Mumbai,2,8.5,24,annual,yes
+1, Mumbai,2,8.5,24,annual, yes
 2,Pune,,3.0,31,casual,yes
 3,Mumbai,1,4.0,19,annual,no
 4,Bengaluru,3,12.0,41,annual,yes
@@ -2577,11 +2598,26 @@ print(raw_path.read_text(encoding="utf-8"))"""
     b.md("## Practice 07.1 — parse, clean, derive")
     b.code(
         """# Practice 07.1
+import math
+
+
+def cell(text):
+    if text is None:
+        return None
+    if isinstance(text, str):
+        return text.strip()
+    return text
+
+
 def parse_float(text):
+    text = cell(text)
     try:
-        return float(text)
+        value = float(text)
     except (TypeError, ValueError):
         return None
+    if math.isnan(value):
+        return None
+    return value
 
 
 def age_group(age):
@@ -2605,13 +2641,14 @@ def prepare(csv_text):
     reader = csv.DictReader(io.StringIO(csv_text.strip()))
     for row in reader:
         report["rows_in"] += 1
-        if row["id"] in seen:
+        trip_id = cell(row["id"])
+        if trip_id in seen:
             report["dropped_duplicate"] += 1
             continue
         hours = parse_float(row["hours"])
         km = parse_float(row["km"])
         age = parse_float(row["rider_age"])
-        missing = row["hours"] in ("", None) or row["km"] in ("", None) or row["rider_age"] in ("", None)
+        missing = cell(row["hours"]) in ("", None) or cell(row["km"]) in ("", None) or cell(row["rider_age"]) in ("", None)
         if hours is None or km is None or age is None:
             if missing:
                 report["dropped_missing"] += 1
@@ -2621,16 +2658,16 @@ def prepare(csv_text):
         if hours <= 0:
             report["dropped_invalid"] += 1
             continue
-        seen.add(row["id"])
+        seen.add(trip_id)
         cleaned.append(
             {
-                "id": int(row["id"]),
-                "city": row["city"],
+                "id": int(trip_id),
+                "city": cell(row["city"]),
                 "hours": hours,
                 "km": km,
                 "rider_age": int(age),
-                "pass_type": row["pass_type"],
-                "returned": row["returned"] == "yes",
+                "pass_type": cell(row["pass_type"]),
+                "returned": cell(row["returned"]) == "yes",
                 "km_per_hour": km / hours,
                 "age_group": age_group(int(age)),
             }
@@ -2656,12 +2693,14 @@ assert quality["dropped_missing"] == 1
 assert quality["dropped_invalid"] == 1
 assert quality["rows_out"] == 6
 assert {row["id"] for row in trips} == {1, 3, 4, 6, 7, 8}
+assert next(row["city"] for row in trips if row["id"] == 1) == "Mumbai"
+assert next(row["returned"] for row in trips if row["id"] == 1) is True
 print("Practice 07.1 passed.")"""
     )
     b.md(
         hint(
             "07.1",
-            "Nine data rows. Row 2 has blank hours (missing). The second row 4 is a duplicate. Row 5 has `abc` hours (invalid). Keep ids 1, 3, 4, 6, 7, 8.",
+            "Nine data rows. Strip city/returned. Row 2 has blank hours (missing). The second row 4 is a duplicate. Row 5 has `abc` hours (invalid). Keep ids 1, 3, 4, 6, 7, 8.",
         )
     )
     b.md("## Practice 07.2 — split, separate target, scale")
@@ -2760,7 +2799,7 @@ print("Practice 07.3 passed.")"""
     b.md(
         """## You are ready for ML libraries when
 
-- You can load rows, clean them (`strip`, convert, drop missing), and say what each column means.
+- You can load rows, `strip` them, convert them, drop missing/`NaN`, and say what each column means.
 - You can encode a category as a number and keep the target out of the feature matrix.
 - You can split first and compute statistics on train only (or seed a shuffle).
 - You can parse a date and read a docstring with `help` / `.__doc__`.
@@ -2771,7 +2810,7 @@ print("Practice 07.3 passed.")"""
     b.md(
         """## Common mistakes
 
-- Keeping duplicate id 4 or the blank-hours row.
+- Keeping duplicate id 4, the blank-hours row, or the padded city as a different city.
 - Scaling before splitting.
 - Putting `returned` inside `X`.
 """
