@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import base64
 import sys
+import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -94,6 +96,8 @@ def header(filename: str, title: str, minutes: int, prereq: str, objectives: lis
 4. Practice cells include a working answer so **Run all** never fails (needed for class and CI). To learn, comment out the answer, rewrite it, then run the check.
 5. Hints sit under each practice. Clean solutions are at the end.
 
+Concept sections include diagrams of the idea, not only the code. They show as pictures in Colab and as Mermaid on GitHub.
+
 ## What you will be able to do
 
 {objective_lines}
@@ -144,6 +148,20 @@ def solution_block(practice_id: str, code: str) -> str:
 </details>"""
 
 
+def mermaid(source: str, alt: str) -> str:
+    """Mermaid for GitHub, plus an SVG so the same diagram shows in Colab."""
+    body = textwrap.dedent(source).strip()
+    encoded = base64.urlsafe_b64encode(body.encode("utf-8")).decode("ascii")
+    url = f"https://mermaid.ink/svg/{encoded}"
+    return (
+        f"![{alt}]({url})\n\n"
+        "<details>\n"
+        "<summary>Diagram source</summary>\n\n"
+        f"```mermaid\n{body}\n```\n\n"
+        "</details>"
+    )
+
+
 class Builder:
     def __init__(self, prefix: str) -> None:
         self.prefix = prefix
@@ -189,7 +207,18 @@ A Colab notebook is a sequence of **markdown cells** (notes) and **code cells** 
 - **Runtime → Run all** is the honest test: would this notebook work for the next person?
 - Closing the tab later may recycle the runtime. Re-run from the top when that happens.
 
-This course stays on Python's standard library. You do not need to `pip install` anything."""
+This course stays on Python's standard library. You do not need to `pip install` anything.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              notebookFile[Notebook file] --> cells[Markdown and code cells]
+              cells --> runtime[Colab runtime]
+              runtime --> names[Names and values]
+            """,
+            "The notebook file is not the runtime; names live in the runtime",
+        )
     )
     b.md("## Comments and `print()`")
     b.md("`print()` is how a notebook talks back to you. A line starting with `#` is a comment: Python skips it.")
@@ -205,7 +234,17 @@ print("You can print several lines")"""
 
 A variable is a **name that refers to a value**. You do not declare a type first. Assignment uses `=`.
 
-Text needs quotes. `city = Mumbai` looks up a name called Mumbai. `city = "Mumbai"` stores text."""
+Text needs quotes. `city = Mumbai` looks up a name called Mumbai. `city = "Mumbai"` stores text.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              nameCity[city] --> textMumbai["Mumbai"]
+              nameRiders[riders] --> numTwelve[12]
+            """,
+            "A variable is a name that refers to a value",
+        )
     )
     b.code(
         """city = "Mumbai"
@@ -238,7 +277,17 @@ print(label, count)"""
 
 Python uses indentation to mean "this line belongs to the block above." Other languages often use `{}`. Here, spaces are syntax.
 
-Use **4 spaces** (Colab's Tab key does this). Mixing Tab and spaces, or forgetting the indent after `if`, causes `IndentationError`."""
+Use **4 spaces** (Colab's Tab key does this). Mixing Tab and spaces, or forgetting the indent after `if`, causes `IndentationError`.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              ifReady["if ready:"] --> inBlock["indented lines belong to the block"]
+              ifReady --> afterBlock["unindented line runs either way"]
+            """,
+            "Indentation puts lines inside the block above",
+        )
     )
     b.code(
         """ready = True
@@ -254,7 +303,17 @@ The next cells **catch** errors so **Run all** can continue. In real work the ke
 
 Read the **error type** first (`NameError`, `IndentationError`), then the line it points at.
 
-`NameError` is the usual result of running cells out of order: you used a name that was never assigned in *this* runtime."""
+`NameError` is the usual result of running cells out of order: you used a name that was never assigned in *this* runtime.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              traceback[Traceback] --> errType[Read the error type first]
+              errType --> errLine[Then the line it points at]
+            """,
+            "Read the error type in a traceback before the rest",
+        )
     )
     b.code(
         """try:
@@ -383,7 +442,18 @@ print(type(title))"""
 
 `type(x)` reports the type. Python will not add a number to text until you convert one of them.
 
-`/` always gives a `float` (`4 / 2` is `2.0`). `//` is integer division. `**` is power."""
+`/` always gives a `float` (`4 / 2` is `2.0`). `//` is integer division. `**` is power.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              intType[int] --> okMath[Multiply and add]
+              strType[str] --> okText[Index and concatenate]
+              mix["str plus int"] --> typeError[TypeError]
+            """,
+            "The type of a value decides which operations are legal",
+        )
     )
     b.code(
         """trips = 7
@@ -416,7 +486,20 @@ If a value came from a form or a CSV cell, it is often a **string**, even when i
 
 `int("19.0")` fails because of the decimal point. Use `int(float("19.0"))` when you need a whole number.
 
-Bad conversions raise `ValueError`. Notebook 05 will catch that on purpose."""
+Bad conversions raise `ValueError`. Notebook 05 will catch that on purpose.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              csvCell["CSV cell 23"] --> asText[str]
+              asText --> intFn["int()"]
+              intFn --> asNumber[23]
+              asText --> floatFn["float()"]
+              floatFn --> asFloat["23.0"]
+            """,
+            "A CSV cell is text until you convert it on purpose",
+        )
     )
     b.code(
         """raw_age = "23"          # a CSV cell or form field, not a number yet
@@ -437,7 +520,18 @@ print("via float:", int(float("19.0")))"""
 
 Indexing starts at `0`. Slices are `[start:stop]` and **exclude** `stop`. Negative indexes count from the end.
 
-An f-string puts values into text: `f"{name} logged {trips} trips."`"""
+An f-string puts values into text: `f"{name} logged {trips} trips."`
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              city["Hyderabad"] --> firstCh["index 0 is H"]
+              city --> lastCh["index -1 is d"]
+              city --> slice["slice 0:5 is Hyder"]
+            """,
+            "String indexes start at 0; a slice excludes the stop index",
+        )
     )
     b.code(
         """city = "Hyderabad"
@@ -562,7 +656,19 @@ print(sample[:3], len(sample))"""
 | dict | `{"k": 1}` | yes (insertion) | yes | keys unique | by key |
 | set | `{1, 2}` | no | yes | no | by value |
 
-Machine-learning tables are usually a **list of dictionaries** (one dict per row) until you later load them into pandas."""
+Machine-learning tables are usually a **list of dictionaries** (one dict per row) until you later load them into pandas.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              listCol[list] --> grow[Grow and change]
+              tupleCol[tuple] --> frozen[Fixed sequence]
+              dictCol[dict] --> byKey[Look up by column name]
+              setCol[set] --> unique[Unique membership]
+            """,
+            "Pick a collection by how you look values up and whether they can change",
+        )
     )
     b.code(
         """cities = ["Mumbai", "Pune", "Bengaluru"]
@@ -592,7 +698,17 @@ print("Pune" in seen)"""
     b.md(
         """## Nested records
 
-A list can hold dictionaries. A dictionary can hold lists. Draw the path: `rows[0][\"city\"]`."""
+A list can hold dictionaries. A dictionary can hold lists. Draw the path: `rows[0][\"city\"]`.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              rows[rows] --> firstRow["rows[0]"]
+              firstRow --> cityField["city is Mumbai"]
+            """,
+            "Nested access follows a path: first the row, then the key",
+        )
     )
     b.code(
         """rows = [
@@ -606,7 +722,18 @@ print(rows[0])"""
     b.md(
         """## Aliases and copies
 
-`b = a` does not copy a list. Both names point at the same object. Use `a.copy()` or `list(a)` for a shallow copy. Nested objects still need `copy.deepcopy` if you must duplicate inner lists."""
+`b = a` does not copy a list. Both names point at the same object. Use `a.copy()` or `list(a)` for a shallow copy. Nested objects still need `copy.deepcopy` if you must duplicate inner lists.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              original[original] --> sameList[same list]
+              alias[alias] --> sameList
+              clone[clone] --> otherList[separate list]
+            """,
+            "An alias shares the list; a copy is a second list",
+        )
     )
     b.code(
         """original = ["a", "b"]
@@ -737,7 +864,21 @@ Python checks conditions from the top. The first true branch runs, then the chai
 
 **Truthiness:** empty lists, empty strings, `0`, and `None` count as false in an `if`. A non-empty list counts as true.
 
-There is no `input()` in these notebooks so **Run all** never waits for a person. Treat variables as if they came from a form."""
+There is no `input()` in these notebooks so **Run all** never waits for a person. Treat variables as if they came from a form.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              startCheck[Check hours]
+              startCheck --> q1{"hours less than 0?"}
+              q1 -->|yes| invalid[invalid]
+              q1 -->|no| q2{"hours equal 0?"}
+              q2 -->|yes| empty[empty]
+              q2 -->|no| okStatus[ok]
+            """,
+            "if / elif / else takes the first true branch, then stops",
+        )
     )
     b.code(
         """hours = 2.5
@@ -767,7 +908,33 @@ print("empty list is falsy")"""
 - `while` repeats until the condition becomes false. **Update the counter**, or it never ends.
 - `continue` skips the rest of this round. `break` leaves the loop.
 
-Nested loops are just loops inside loops, not a third kind of loop."""
+Nested loops are just loops inside loops, not a third kind of loop.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              seq[sequence] --> visit[visit each item]
+              visit --> acc[update accumulator]
+              acc --> visit
+            """,
+            "A loop repeats a path; an accumulator remembers what you have seen",
+        )
+        + """
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              item[item] --> skip{"continue?"}
+              skip -->|yes| nextItem[next item]
+              skip -->|no| work[do the work]
+              work --> leave{"break?"}
+              leave -->|yes| afterLoop[leave the loop]
+              leave -->|no| nextItem
+            """,
+            "continue skips the rest of this round; break leaves the loop",
+        )
     )
     b.code(
         """for n in range(3):
@@ -948,7 +1115,30 @@ A function is a named block you can reuse. `return` sends a value back. If you o
 
 Names assigned inside a function are **local**. They do not overwrite names outside unless you go looking for trouble with `global` (skip that here).
 
-A **pure** function depends only on its arguments and does not change lists or dicts that were passed in."""
+A **pure** function depends only on its arguments and does not change lists or dicts that were passed in.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              args[arguments] --> body[function body]
+              body --> ret[return value]
+              body --> noneRet["None if no return"]
+            """,
+            "Arguments go in; return sends a value back, or None if you omit return",
+        )
+        + """
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              outerN["outer n stays 10"]
+              callFn["add_one(3)"] --> localN["local n is 4"]
+              callFn --> outerN
+            """,
+            "Names assigned inside a function are local",
+        )
     )
     b.code(
         """def celsius_to_fahrenheit(celsius):
@@ -989,7 +1179,17 @@ A list comprehension builds a new list: `[expression for item in sequence if con
 
 There are dict comprehensions too: `{k: v for ...}`. Start with a loop if the expression is hard to read.
 
-`lambda` is a tiny anonymous function. Prefer a named `def` unless you need a one-off sort key. `map` and `filter` exist; comprehensions are usually clearer."""
+`lambda` is a tiny anonymous function. Prefer a named `def` unless you need a one-off sort key. `map` and `filter` exist; comprehensions are usually clearer.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              km[km values] --> keep["keep if >= 5"]
+              keep --> newList[new list]
+            """,
+            "A comprehension walks a sequence and builds a new collection",
+        )
     )
     b.code(
         """km = [1.2, 8.0, 5.0]
@@ -1120,7 +1320,30 @@ print(double(21))"""
 | Runtime | while running | `int("bike")`, `1/0`, missing key |
 | Logic | it runs, the answer is wrong | averaging with the wrong list |
 
-Catch only errors you expect. Bare `except:` hides bugs. After you convert data, `assert` the shape you promised."""
+Catch only errors you expect. Bare `except:` hides bugs. After you convert data, `assert` the shape you promised.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              syntax[Syntax] --> beforeRun[Fails before the cell runs]
+              runtimeErr[Runtime] --> whileRun[Fails while running]
+              logicErr[Logic] --> wrongAnswer[Runs but the answer is wrong]
+            """,
+            "Syntax, runtime, and logic errors show up at different times",
+        )
+        + """
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              tryBlock[try] --> okPath["return int(text)"]
+              tryBlock --> badPath[ValueError]
+              badPath --> catchNone[return None]
+            """,
+            "Catch only the failure you expect, then continue",
+        )
     )
     b.code(
         """# Syntax: caught so Run all continues
@@ -1160,7 +1383,20 @@ assert require_positive(2) == 2"""
 
 `import math` loads a library. Colab files live in a **temporary** folder (`/content` on Colab). Restarting the runtime can delete them. This notebook writes under `Path.cwd() / "_course_data"` so it also works in GitHub Actions.
 
-Always open files with a `with` block so they close even if something fails. Prefer `pathlib.Path` over raw `"/tmp/file.csv"` strings."""
+Always open files with a `with` block so they close even if something fails. Prefer `pathlib.Path` over raw `"/tmp/file.csv"` strings.
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              payload[dict] --> dumps["json.dumps"]
+              dumps --> writeFile["Path.write_text"]
+              writeFile --> readFile["Path.read_text"]
+              readFile --> loads["json.loads"]
+              loads --> dictBack[dict]
+            """,
+            "JSON is a dict written as text, then read back as a dict",
+        )
     )
     b.code(
         """import csv
@@ -1316,7 +1552,18 @@ NumPy, pandas, and scikit-learn all expect **tidy rows**: consistent keys, numer
 
 You will do that work in pure Python. The same ideas map onto `DataFrame.dropna`, `train_test_split`, and `MinMaxScaler` later.
 
-Libraries are objects with methods: `model.fit(X, y)`. A tiny class below shows attributes and methods without becoming an OOP course."""
+Libraries are objects with methods: `model.fit(X, y)`. A tiny class below shows attributes and methods without becoming an OOP course.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              raw[raw rows] --> clean["type, drop, dedupe"]
+              clean --> tidy[list of dictionaries]
+              tidy --> later[pandas and sklearn later]
+            """,
+            "Tidy rows in Python are the same idea libraries will automate later",
+        )
     )
     b.code(
         """class Table:
@@ -1343,7 +1590,23 @@ raw_rows = [
 ]
 print("raw rows", Table(raw_rows).n_rows)"""
     )
-    b.md("## Clean, then transform")
+    b.md(
+        """## Clean, then transform
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              rawRow[each raw row] --> dup{"duplicate id?"}
+              dup -->|yes| dropDup[drop duplicate]
+              dup -->|no| parse[parse hours and km]
+              parse --> bad{"missing or invalid?"}
+              bad -->|yes| dropBad[drop the row]
+              bad -->|no| keep[keep a typed row]
+            """,
+            "Clean by dropping bad rows before you transform the rest",
+        )
+    )
     b.code(
         """def parse_float(text):
     try:
@@ -1403,7 +1666,33 @@ The **target** is the thing you would predict (`returned`). **Features** are the
 
 Split **before** you compute min/max or averages. If the validation rows influence scaling, you have leaked information.
 
-This split is deterministic: sort by `id`, first 80% train, remainder validation. No random shuffle, so CI stays stable."""
+This split is deterministic: sort by `id`, first 80% train, remainder validation. No random shuffle, so CI stays stable.
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              rows[tidy rows] --> xy[features X and target y]
+              xy --> splitFirst[split by id]
+              splitFirst --> train[train]
+              splitFirst --> valid[valid]
+              train --> fit[fit min-max on train]
+              fit --> scaleT[scale train]
+              fit --> scaleV[scale valid]
+            """,
+            "Split first, then fit scaling on train only",
+        )
+        + """
+
+"""
+        + mermaid(
+            """
+            flowchart LR
+              wrong[scale all rows first] --> leak[validation leaked]
+              right[split first] --> noLeak[train-only bounds]
+            """,
+            "Scaling before the split lets validation rows influence train",
+        )
     )
     b.code(
         """def split_rows(rows, fraction=0.8):
@@ -1582,7 +1871,33 @@ What should happen to each raw row:
 | 8 | clean | keep |
 
 Nine data rows in, six useful rows out. Sorted ids `[1, 3, 4, 6, 7, 8]`; 80% train is the first four.
+
 """
+        + mermaid(
+            """
+            flowchart TB
+              csvText[CSV text] --> parseRows[parse]
+              parseRows --> dropBad["drop missing, invalid, duplicate"]
+              dropBad --> derive[derive km_per_hour and age_group]
+              derive --> splitData["split 80/20 by id"]
+              splitData --> scale[train-only min-max]
+              scale --> bundle[JSON bundle]
+            """,
+            "Capstone pipeline: parse, clean, derive, split, scale, export",
+        )
+        + """
+
+"""
+        + mermaid(
+            """
+            flowchart TB
+              nine[9 data rows] --> keep["keep 1, 3, 4, 6, 7, 8"]
+              nine --> miss["drop id 2 missing"]
+              nine --> dup["drop second id 4"]
+              nine --> inv["drop id 5 invalid"]
+            """,
+            "Nine rows in, six kept, three dropped for distinct reasons",
+        )
     )
     b.md("## The raw file")
     b.code(

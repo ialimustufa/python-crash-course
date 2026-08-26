@@ -4,6 +4,13 @@ This folder is **unmaintained archived classroom material** from earlier live se
 
 **Learn here instead:** the current course lives at the repository root and in [`notebooks/`](../notebooks/). Use those notebooks (and the course README) rather than this archive.
 
+```mermaid
+flowchart LR
+  learner[Learner] --> current[notebooks/ maintained course]
+  learner -.-> archive[legacy/ historical snapshot]
+  current --> colab[Google Colab]
+```
+
 ## What is here
 
 - [`notebooks/`](notebooks/) — four original Colab / Jupyter notebooks

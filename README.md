@@ -24,6 +24,15 @@ Beginner Python for people who want to be ready for machine learning libraries n
 
 There is no `input()` in the maintained notebooks, so they never wait for a prompt.
 
+```mermaid
+flowchart LR
+  startNode[Open notebook 00] --> copyDrive[Save a copy in Drive]
+  copyDrive --> runTop[Run cells top to bottom]
+  runTop --> rewrite[Rewrite the practice cells]
+  rewrite --> nextNb[Open the next notebook]
+  nextNb --> optionalDash[Optional: tick progress on Pages]
+```
+
 ## Course path
 
 | # | Notebook | Time | What you learn | Colab |
@@ -39,9 +48,36 @@ There is no `input()` in the maintained notebooks, so they never wait for a prom
 
 About six hours if you do the practices instead of only reading.
 
+```mermaid
+flowchart TB
+  subgraph pythonBasics [Python basics]
+    n00[00 Colab]
+    n01[01 Values]
+    n02[02 Collections]
+    n03[03 Conditionals]
+    n04[04 Functions]
+    n05[05 Files]
+  end
+  subgraph mlReady [Ready for ML libraries]
+    n06[06 Data workflows]
+    n07[07 Capstone]
+  end
+  n00 --> n01 --> n02 --> n03 --> n04 --> n05 --> n06 --> n07
+```
+
 ## Exercises, hints, and solutions
 
 Each notebook repeats a short cycle: explain → predict → run → practice → check.
+
+Concept sections in each notebook include Mermaid diagrams of the idea (runtime, types, aliases, splits, and so on). They show as pictures in Colab and as Mermaid on GitHub.
+
+```mermaid
+flowchart LR
+  explain[Explain] --> predict[Predict]
+  predict --> runCell[Run]
+  runCell --> practice[Practice]
+  practice --> check[Check]
+```
 
 - **Predict** questions ask you to decide the output before you run. Answers sit under *After you run*.
 - Practice cells include a working answer so **Run all** never fails. Comment it out, rewrite it, then run the check.
@@ -53,6 +89,21 @@ Each notebook repeats a short cycle: explain → predict → run → practice �
 Notebook 07 prepares a dirty bike-share CSV in **pure Python**: parse, type, drop missing/invalid/duplicate rows, derive features, split 80/20 by id, min-max scale using training rows only, then export a JSON bundle. You do **not** train a model.
 
 You are done when every capstone check prints `passed`.
+
+```mermaid
+flowchart TB
+  rawCsv[Dirty bike-share CSV] --> parseRows[Parse to dictionaries]
+  parseRows --> dropBad[Drop missing, invalid, and duplicate rows]
+  dropBad --> derive[Derive km_per_hour and age_group]
+  derive --> splitData["Sort by id and split 80/20"]
+  splitData --> trainRows[Train rows]
+  splitData --> validRows[Validation rows]
+  trainRows --> fitScale[Fit min-max on train only]
+  fitScale --> scaleTrain[Scale train]
+  fitScale --> scaleValid[Scale validation]
+  scaleTrain --> bundle[Export JSON bundle]
+  scaleValid --> bundle
+```
 
 ## Fork this course and enable the dashboard
 
@@ -68,6 +119,15 @@ On your fork:
 
 The dashboard writes Colab links for **your** owner/repo/branch. Export JSON if you switch browsers. Reset stays on that device.
 
+```mermaid
+flowchart TB
+  forkRepo[Fork the repository] --> enableActions[Enable Actions]
+  enableActions --> enablePages["Settings: Pages source is GitHub Actions"]
+  enablePages --> deployDash[Run Deploy course dashboard]
+  deployDash --> yourSite["github.io dashboard for your fork"]
+  yourSite --> yourColab[Colab links open notebooks on your fork]
+```
+
 ## What to learn next
 
 After this course:
@@ -78,6 +138,20 @@ After this course:
 - scikit-learn `Pipeline` and `train_test_split`
 
 The verbs stay the same: clean, split, scale, check.
+
+## How this repository is organized
+
+```mermaid
+flowchart LR
+  readme[README] --> notebooks[notebooks/ current course]
+  readme --> site[site/ Pages dashboard]
+  readme --> workflows[GitHub Actions]
+  readme --> legacy[legacy/ archived classroom files]
+  workflows --> quality[course-quality]
+  workflows --> pagesDeploy[deploy-pages]
+```
+
+Maintained materials are `notebooks/` and `site/`. CI executes only the numbered notebooks. Historical files stay in `legacy/` and are not part of the path above.
 
 ## Legacy classroom archive
 
